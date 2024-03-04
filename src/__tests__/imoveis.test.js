@@ -1,8 +1,16 @@
 const request = require('supertest');
 const app = require('../server');
 
+
 describe('Testes de Imóveis', () => {
   let imovelId;
+
+  const novoImovel = {
+    titulo: 'Apartamento novo',
+    descricao: 'Apartamento de 2 quartos em ótima localização',
+    tipo: 'Apartamento',
+    preco: 200000
+  };  
 
   test('Deve listar todos os imóveis', async () => {
     const response = await request(app).get('/api/imoveis');
@@ -11,12 +19,6 @@ describe('Testes de Imóveis', () => {
   });
 
   test('Deve criar um novo imóvel', async () => {
-    const novoImovel = {
-      titulo: 'Imóvel Teste',
-      descricao: 'Descrição do imóvel de teste',
-      tipo: 'aluguel',
-      preco: 1000.00,
-    };
     const response = await request(app).post('/api/imoveis').send(novoImovel);
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('id');

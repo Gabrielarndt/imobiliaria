@@ -33,6 +33,15 @@ const ImovelController = {
     }
   },
 
+  async create(req, res) {
+    try {
+      const novoImovel = await Imovel.create(req.body);
+      return res.status(201).json(novoImovel);
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  },
+
   async update(req, res) {
     const { id } = req.params;
     const { titulo, descricao, tipo, preco } = req.body;

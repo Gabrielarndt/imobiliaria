@@ -1,8 +1,8 @@
 module.exports = {
     development: {
-      username: 'seu_usuario',
-      password: 'sua_senha',
-      database: 'nome_do_banco_de_dados',
+      username: 'postgres',
+      password: 'admin',
+      database: 'imobiliaria',
       host: 'localhost',
       dialect: 'postgres',
     },

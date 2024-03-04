@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('nome_do_banco_de_dados', 'seu_usuario', 'sua_senha', {
+const sequelize = new Sequelize('imobiliaria', 'postgres', 'admin', {
   host: 'localhost',
   dialect: 'postgres',
 });
