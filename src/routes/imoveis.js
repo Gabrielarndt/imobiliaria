@@ -1,13 +1,14 @@
-// routes/imoveis.js
+// src/routes/imoveis.js
+
 const express = require('express');
 const router = express.Router();
-const ImovelController = require('../controllers/imoveisController'); // Importe o controlador de imóveis
+const ImovelController = require('../controllers/ImovelController');
 
-// Defina as rotas para os imóveis
-router.get('/', ImovelController.getAll);
-router.post('/', ImovelController.create);
-router.get('/:id', ImovelController.getById);
-router.put('/:id', ImovelController.update);
-router.delete('/:id', ImovelController.delete);
+// Rotas para operações CRUD de imóveis
+router.post('/', ImovelController.create); // Criar um novo imóvel
+router.get('/', ImovelController.list); // Listar todos os imóveis
+router.get('/:id', ImovelController.getById); // Obter detalhes de um imóvel específico
+router.put('/:id', ImovelController.update); // Atualizar um imóvel existente
+router.delete('/:id', ImovelController.delete); // Excluir um imóvel existente
 
 module.exports = router;
