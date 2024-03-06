@@ -1,8 +1,9 @@
+// src/__tests__/imoveis.test.js
 const request = require('supertest');
-const app = require('../server');
-
+const { app, PORT } = require('../server'); // Importe a variável 'app' e 'server'
 
 describe('Testes de Imóveis', () => {
+
   let imovelId;
 
   const novoImovel = {
@@ -10,7 +11,7 @@ describe('Testes de Imóveis', () => {
     descricao: 'Apartamento de 2 quartos em ótima localização',
     tipo: 'Apartamento',
     preco: 200000
-  };  
+  };
 
   test('Deve listar todos os imóveis', async () => {
     const response = await request(app).get('/api/imoveis');
@@ -50,4 +51,6 @@ describe('Testes de Imóveis', () => {
     const response = await request(app).delete(`/api/imoveis/${imovelId}`);
     expect(response.status).toBe(204);
   });
+
+
 });

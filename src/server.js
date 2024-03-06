@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const imoveisRouter = require('./routes/imoveis');
 const app = express();
+const PORT = process.env.PORT || 3000;
+
 
 // Middleware para processar corpos de requisição JSON
 app.use(bodyParser.json());
@@ -10,10 +12,9 @@ app.use(bodyParser.json());
 app.use('/api/imoveis', imoveisRouter);
 
 // Inicializa o servidor
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
 
 
-module.exports = app;
+module.exports = { app, PORT }; // Exporte app e PORT
