@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { User } = require('../models');
+const { User } = require('../models/User');
 
 // Função para criar hash de senha
 const hashPassword = async (password) => {
