@@ -1,5 +1,3 @@
-// src/controllers/ImovelController.js
-
 const { Imovel } = require('../models/Imovel');
 
 // Create (Criar um novo imóvel)

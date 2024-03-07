@@ -2,14 +2,29 @@
 
 const request = require('supertest');
 const app = require('../server');
-const { Imovel } = require('../models');
+const { Imovel } = require('../models/Imovel');
+const { Sequelize } = require('sequelize');
+const createServer = require('../config/serverConfig');
+const testConfig = require('../config/config');
 
-beforeEach(async () => {
-  // Limpa a tabela de imóveis antes de cada teste
-  await Imovel.destroy({ where: {} });
-});
+const sequelize = new Sequelize(
+  testConfig.database,
+  testConfig.username,
+  testConfig.password,
+  {
+    host: testConfig.host,
+    dialect: testConfig.dialect,
+  }
+);
+
 
 describe('Testes de Imóveis', () => {
+  let app;
+  beforeAll(async () => {
+    await sequelize.sync({ force: true }); // Isso criará as tabelas no banco de dados de teste
+
+  });
+
   test('Deve listar todos os imóveis', async () => {
     // Insere alguns imóveis fictícios no banco de dados para o teste
     await Imovel.bulkCreate([
@@ -76,7 +91,7 @@ describe('Testes de Imóveis', () => {
     expect(response.body).toHaveProperty('id', createdImovel.id);
     expect(response.body.titulo).toBe(dadosAtualizados.titulo);
     expect(response.body.descricao).toBe(dadosAtualizados.descricao);
-    expect(response.body.preco).toBe(dadosAtualizados.preco);
+    expect(response.body.preco).toBe(dadosAtualizados. preco);
   });
 
   test('Deve excluir um imóvel existente', async () => {

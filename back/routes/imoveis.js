@@ -1,5 +1,5 @@
-// src/routes/imoveis.js
-
+const createServer = require('../config/serverConfig');
+const app = createServer();
 const express = require('express');
 const router = express.Router();
 const ImovelController = require('../controllers/ImovelController');

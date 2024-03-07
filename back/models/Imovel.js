@@ -23,7 +23,6 @@ const Imovel = sequelize.define('Imovel', {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
   },
-  // Adicione outras propriedades conforme necessário
 });
 
 module.exports = Imovel;
