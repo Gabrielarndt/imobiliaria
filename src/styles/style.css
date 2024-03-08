@@ -1,0 +1,26 @@
+.logoImg{
+    margin-left: 0px;
+}
+
+.backColor{
+     background-color: rgb(121, 36, 36);
+}
+
+.opcao, 
+.opcao5 {
+    background-color: rgb(121, 36, 36);
+    border-color: white;
+    border-radius: 3px;
+    margin-right: 10px;
+    width: 45px;
+    padding: 5px;
+    color: white;
+}
+
+.opcao5 {
+    width: 50px;
+}
+
+.loginBt{
+    border-radius: 10px;
+}
