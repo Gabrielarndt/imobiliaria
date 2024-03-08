@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Imóveis</title>
+</head>
+
+<body>
+    <h1>Cadastro de Imóveis</h1>
+    <form id="cadastro-imovel-form">
+        <label for="titulo">Título:</label><br>
+        <input type="text" id="titulo" name="titulo" required><br>
+
+        <label for="descricao">Descrição:</label><br>
+        <textarea id="descricao" name="descricao" required></textarea><br>
+
+        <label for="tipo">Tipo:</label><br>
+        <select id="tipo" name="tipo" required>
+            <option value="aluguel">Aluguel</option>
+            <option value="venda">Venda</option>
+        </select><br>
+
+        <label for="quartos">Quartos:</label><br>
+        <input type="number" id="quartos" name="quartos" required><br>
+
+        <label for="garagens">Garagens:</label><br>
+        <input type="number" id="garagens" name="garagens" required><br>
+
+        <label for="suites">Suítes:</label><br>
+        <input type="number" id="suites" name="suites" required><br>
+
+        <label for="preco">Preço:</label><br>
+        <input type="number" id="preco" name="preco" required><br>
+
+        <label for="cidade">Cidade:</label><br>
+        <input type="text" id="cidade" name="cidade" required><br>
+
+        <label for="bairro">Bairro:</label><br>
+        <input type="text" id="bairro" name="bairro" required><br>
+
+        <label for="rua">Rua:</label><br>
+        <input type="text" id="rua" name="rua" required><br>
+
+        <label for="fotos">Fotos:</label><br>
+        <input type="file" id="fotos" name="fotos" multiple accept="image/*"><br>
+
+        <button type="submit">Cadastrar Imóvel</button>
+    </form>
+
+    <script>
+        const form = document.getElementById('cadastro-imovel-form');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('http://localhost:3000/api/imoveis', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    window.location.href = '/sucesso';
+                } else {
+                    console.error('Erro ao cadastrar imóvel:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Erro ao cadastrar imóvel:', error);
+            }
+        });
+
+    </script>
+</body>
+
+</html>
