@@ -6,9 +6,17 @@ const Imovel = require('../models/Imovel');
 // Rota para lidar com o envio de dados do formulário e criar um novo imóvel
 router.post('/', async (req, res) => {
   try {
+    // Obter os dados do imóvel do corpo da requisição
+    const imovelData = req.body;
+
+    // Incluir a ordem das fotos no objeto de dados do imóvel
+    imovelData.ordemFotos = req.body.fotos.map((foto, index) => index);
+
+    console.log("Dados recebidos pelo servidor:", imovelData);
+
     // Criar um novo imóvel com os dados recebidos do formulário
-    const imovel = await Imovel.create(req.body);
-    res.status(201).json(imovel);
+    const Imoveis = await Imovel.create(imovelData);
+    res.status(201).json(Imoveis);
   } catch (error) {
     console.error('Erro ao cadastrar imóvel:', error);
     res.status(500).json({ error: 'Erro ao cadastrar imóvel' });

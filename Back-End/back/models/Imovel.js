@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const Imovel = sequelize.define('Imovel', {
+const Imoveis = sequelize.define('Imoveis', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -9,31 +9,31 @@ const Imovel = sequelize.define('Imovel', {
   },
   titulo: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   descricao: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: true,
   },
   tipo: {
     type: DataTypes.ENUM('aluguel', 'venda'),
-    allowNull: false,
+    allowNull: true,
   },
-  quartos:{
+  quartos: {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  garagens:{
+  garagens: {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  suites:{
+  suites: {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
   preco: {
-    type: DataTypes.DECIMAL(10, 2),
-    allowNull: false,
+    type: DataTypes.TEXT,
+    allowNull: true,
   },
   cidade: {
     type: DataTypes.STRING,
@@ -52,9 +52,24 @@ const Imovel = sequelize.define('Imovel', {
     allowNull: true,
   },
   fotos: {
-    type: DataTypes.JSON, // Ou DataTypes.ARRAY(DataTypes.STRING) se preferir armazenar as referências como strings
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
+  ordemFotos: {
+    type: DataTypes.JSON, // Armazenar a ordem das fotos como um array de IDs
     allowNull: true,
   }
-});
+},
+  {
+    hooks: {
+      // Hook para atualizar a ordem das fotos sempre que o imóvel for atualizado
+      beforeUpdate: (imovel, options) => {
+        if (imovel.changed('fotos')) {
+          // Se as fotos foram alteradas, atualize a ordem das fotos
+          imovel.ordemFotos = imovel.fotos.map((foto, index) => index);
+        }
+      }
+    }
+  });
 
-module.exports = Imovel;
+module.exports = Imoveis;

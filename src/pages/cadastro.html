@@ -5,62 +5,261 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Imóveis</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Adicionando estilos personalizados */
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 50px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+        }
+
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        /* Estilos para a seção de fotos selecionadas */
+        #selected-photos-container {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        #selected-photos-container img {
+            max-width: 100px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .photo-navigation {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Cadastro de Imóveis</h1>
-    <form id="cadastro-imovel-form">
-        <label for="titulo">Título:</label><br>
-        <input type="text" id="titulo" name="titulo" required><br>
+    <div class="container">
+        <h1>Cadastro de Imóveis</h1>
+        <form id="cadastro-imovel-form" action="http://localhost:3000/api/imoveis" method="POST"
+            enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="titulo">Título:</label>
+                <input type="text" id="titulo" name="titulo" class="form-control" required>
+            </div>
 
-        <label for="descricao">Descrição:</label><br>
-        <textarea id="descricao" name="descricao" required></textarea><br>
+            <div class="form-group">
+                <label for="descricao">Descrição:</label>
+                <textarea id="descricao" name="descricao" class="form-control" required></textarea>
+            </div>
 
-        <label for="tipo">Tipo:</label><br>
-        <select id="tipo" name="tipo" required>
-            <option value="aluguel">Aluguel</option>
-            <option value="venda">Venda</option>
-        </select><br>
+            <div class="form-group">
+                <label for="tipo">Tipo:</label>
+                <select id="tipo" name="tipo" class="form-control" required>
+                    <option value="aluguel">Aluguel</option>
+                    <option value="venda">Venda</option>
+                </select>
+            </div>
 
-        <label for="quartos">Quartos:</label><br>
-        <input type="number" id="quartos" name="quartos" required><br>
+            <div class="form-group">
+                <label for="quartos">Quartos:</label>
+                <input type="number" id="quartos" name="quartos" class="form-control" required>
+            </div>
 
-        <label for="garagens">Garagens:</label><br>
-        <input type="number" id="garagens" name="garagens" required><br>
+            <div class="form-group">
+                <label for="garagens">Garagens:</label>
+                <input type="number" id="garagens" name="garagens" class="form-control" required>
+            </div>
 
-        <label for="suites">Suítes:</label><br>
-        <input type="number" id="suites" name="suites" required><br>
+            <div class="form-group">
+                <label for="suites">Suítes:</label>
+                <input type="number" id="suites" name="suites" class="form-control" required>
+            </div>
 
-        <label for="preco">Preço:</label><br>
-        <input type="number" id="preco" name="preco" required><br>
+            <div class="form-group">
+                <label for="preco">Preço:</label>
+                <input type="text" id="preco" name="preco" class="form-control" required>
+            </div>
 
-        <label for="cidade">Cidade:</label><br>
-        <input type="text" id="cidade" name="cidade" required><br>
+            <div class="form-group">
+                <label for="cidade">Cidade:</label>
+                <input type="text" id="cidade" name="cidade" class="form-control" required>
+            </div>
 
-        <label for="bairro">Bairro:</label><br>
-        <input type="text" id="bairro" name="bairro" required><br>
+            <div class="form-group">
+                <label for="bairro">Bairro:</label>
+                <input type="text" id="bairro" name="bairro" class="form-control" required>
+            </div>
 
-        <label for="rua">Rua:</label><br>
-        <input type="text" id="rua" name="rua" required><br>
+            <div class="form-group">
+                <label for="rua">Rua:</label>
+                <input type="text" id="rua" name="rua" class="form-control" required>
+            </div>
 
-        <label for="fotos">Fotos:</label><br>
-        <input type="file" id="fotos" name="fotos" multiple accept="image/*"><br>
+            <label for="fotos">Fotos:</label><br>
+            <input type="file" id="fotos" name="fotos" multiple accept="image/*"><br>
 
-        <button type="submit">Cadastrar Imóvel</button>
-    </form>
+            <!-- Seção para exibir as fotos selecionadas -->
+            <div id="selected-photos-container"></div>
+
+            <div class="photo-navigation">
+                <button type="button" id="move-up-btn" class="btn btn-secondary">Mover para cima</button>
+                <button type="button" id="move-down-btn" class="btn btn-secondary">Mover para baixo</button>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Cadastrar Imóvel</button>
+        </form>
+    </div>
 
     <script>
         const form = document.getElementById('cadastro-imovel-form');
 
+
+        // Adicione estas funções ao seu código JavaScript do cliente:
+
+        const selectedPhotosContainer = document.getElementById('selected-photos-container');
+        let selectedPhotoIndex = null;
+
+        // Função para exibir as fotos selecionadas
+        function displaySelectedPhotos() {
+            selectedPhotosContainer.innerHTML = ''; // Limpa o conteúdo atual
+
+            selectedPhotos.forEach((photo, index) => {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(photo);
+                img.dataset.index = index;
+                img.addEventListener('click', () => selectPhoto(index)); // Adiciona ouvinte de eventos para clicar na imagem
+
+                // Se a foto estiver selecionada, adiciona a classe 'selected'
+                if (index === selectedPhotoIndex) {
+                    img.classList.add('selected');
+                }
+
+                selectedPhotosContainer.appendChild(img);
+            });
+        }
+
+        // Função para selecionar uma foto
+        function selectPhoto(index) {
+            selectedPhotoIndex = index;
+            displaySelectedPhotos();
+        }
+
+        // Função para mover a foto selecionada para cima
+        function movePhotoUp() {
+            if (selectedPhotoIndex > 0) {
+                const temp = selectedPhotos[selectedPhotoIndex];
+                selectedPhotos[selectedPhotoIndex] = selectedPhotos[selectedPhotoIndex - 1];
+                selectedPhotos[selectedPhotoIndex - 1] = temp;
+                selectedPhotoIndex--;
+                displaySelectedPhotos();
+            }
+        }
+
+        // Função para mover a foto selecionada para baixo
+        function movePhotoDown() {
+            if (selectedPhotoIndex < selectedPhotos.length - 1) {
+                const temp = selectedPhotos[selectedPhotoIndex];
+                selectedPhotos[selectedPhotoIndex] = selectedPhotos[selectedPhotoIndex + 1];
+                selectedPhotos[selectedPhotoIndex + 1] = temp;
+                selectedPhotoIndex++;
+                displaySelectedPhotos();
+            }
+        }
+
+        // Ouvinte de eventos para o botão "Mover para cima"
+        document.getElementById('move-up-btn').addEventListener('click', movePhotoUp);
+
+        // Ouvinte de eventos para o botão "Mover para baixo"
+        document.getElementById('move-down-btn').addEventListener('click', movePhotoDown);
+
+        // Ouvinte de eventos para o input de seleção de arquivos
+        document.getElementById('fotos').addEventListener('change', (event) => {
+            selectedPhotos = Array.from(event.target.files);
+            displaySelectedPhotos();
+        });
+
+
+
+        // lllllllllllllllllllllllllllllllllllll
+
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
 
+            const jsonData = {};
             const formData = new FormData(form);
+
+            const filesData = [];
+            const files = document.getElementById('fotos').files;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                filesData.push({
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    file: file
+                });
+            }
+
+            // Verificar se já existem fotos em jsonData['fotos']
+            if (jsonData['fotos']) {
+                // Se já existirem, adicione as novas fotos à lista existente
+                jsonData['fotos'] = jsonData['fotos'].concat(filesData);
+            } else {
+                // Se não existirem, defina as novas fotos como a lista de fotos
+                jsonData['fotos'] = filesData;
+            }
+
+            formData.forEach((value, key) => {
+                if (key !== 'fotos') {
+                    jsonData[key] = value;
+                }
+            });
 
             try {
                 const response = await fetch('http://localhost:3000/api/imoveis', {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jsonData)
                 });
 
                 if (response.ok) {
@@ -74,6 +273,7 @@
         });
 
     </script>
+
 </body>
 
 </html>

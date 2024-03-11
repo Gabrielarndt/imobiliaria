@@ -1,5 +1,5 @@
 'use strict';
-
+const { DataTypes } = require('sequelize');
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Imoveis', {
@@ -11,15 +11,15 @@ module.exports = {
       },
       titulo: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       descricao: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       tipo: {
         type: Sequelize.ENUM('aluguel', 'venda'),
-        allowNull: false,
+        allowNull: true,
       },
       quartos:{
         type: Sequelize.INTEGER,
@@ -34,8 +34,8 @@ module.exports = {
         allowNull: true,
       },
       preco: {
-        type: Sequelize.DECIMAL(10, 2),
-        allowNull: false,
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       cidade: {
         type: Sequelize.STRING,
@@ -54,17 +54,21 @@ module.exports = {
         allowNull: true,
       },
       fotos: {
-        type: Sequelize.JSON, // Ou Sequelize.ARRAY(Sequelize.STRING) se preferir armazenar as referências como strings
+        type: Sequelize.JSON, 
+        allowNull: true,
+      },
+      ordemFotos: {
+        type: DataTypes.JSON, // Armazenar a ordem das fotos como um array de IDs
         allowNull: true,
       },
       createdAt: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: true,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       updatedAt: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: true,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
         onUpdate: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
