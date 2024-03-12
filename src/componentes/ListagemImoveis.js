@@ -1,34 +1,25 @@
-// ListagemImoveis.js
+document.addEventListener('DOMContentLoaded', async () => {
+  const response = await fetch('http://localhost:3000/api/imoveis');
+  const data = await response.json();
+  const imoveisLista = document.getElementById('imoveis-lista');
 
-import React, { useState, useEffect } from 'react';
-import { getImoveis } from '../services/utilitarios/api'; // Importe a função getImoveis do arquivo api.js
+  data.forEach(imovel => {
+    const card = document.createElement('div');
+    card.classList.add('col-md-4', 'mb-3');
 
-function ListagemImoveis() {
-  const [imoveis, setImoveis] = useState([]);
+    card.innerHTML = `
+          <div class="card">
+          <img src="http://localhost:3000/endpoint-de-imagem/${imovel.id}" alt="Imagem do Imóvel" class="card-img-top">
+              <div class="card-body">
+                  <h5 class="card-title">${imovel.titulo}</h5>
+                  <p class="card-text">${imovel.descricao}</p>
+                  <p class="card-text">${imovel.tipo}</p>
+                  <p class="card-text">${imovel.preco}</p>
+                  <a href="detalhes.html?id=${imovel.id}" class="btn btn-primary">Detalhes</a>
+              </div>
+          </div>
+      `;
 
-  useEffect(() => {
-    async function fetchImoveis() {
-      try {
-        const data = await getImoveis();
-        setImoveis(data);
-      } catch (error) {
-        console.error('Erro ao buscar imóveis:', error);
-      }
-    }
-
-    fetchImoveis();
-  }, []);
-
-  return (
-    <div>
-      <h1>Listagem de Imóveis</h1>
-      <ul>
-        {imoveis.map(imovel => (
-          <li key={imovel.id}>{imovel.titulo}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-export default ListagemImoveis;
+    imoveisLista.appendChild(card);
+  });
+});

@@ -24,6 +24,20 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.get('/imagens/:id', async (req, res) => {
+    try {
+        const imovel = await Imovel.findById(req.params.id);
+        if (!imovel || !imovel.fotos) {
+            return res.status(404).json({ message: 'Imagem não encontrada' });
+        }
+        // Envie a imagem como resposta
+        res.sendFile(imovel.fotos);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro ao recuperar a imagem do imóvel' });
+    }
+});
+
 
 // Rotas adicionais para operações CRUD de imóveis utilizando ImovelController
 router.get('/', ImovelController.list); // Listar todos os imóveis

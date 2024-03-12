@@ -19,6 +19,9 @@ app.get('/cadastroImovel', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages','cadastro.html'));
 });
 
+app.get('/imoveis', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'pages','lista.html'));
+});
 
 // Configuração do multer para lidar com o upload de arquivos
 const storage = multer.diskStorage({
