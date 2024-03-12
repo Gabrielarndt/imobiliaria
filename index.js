@@ -19,8 +19,39 @@ app.get('/cadastroImovel', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages','cadastro.html'));
 });
 
-app.get('/imoveis', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src', 'pages','lista.html'));
+app.post('/imoveis', async (req, res) => {
+  try {
+    const imovelData = req.body;
+
+    // Adicione as fotos ao objeto imovelData, se estiverem presentes na requisição
+    if (req.files && req.files.length > 0) {
+      // Salvar as fotos no diretório de uploads e adicionar os nomes dos arquivos ao objeto imovelData
+      const fotosNomes = req.files.map(file => {
+        const novoNome = `${Date.now()}_${file.originalname}`;
+        file.mv(`uploads/${novoNome}`);
+        return novoNome;
+      });
+      imovelData.fotos = fotosNomes;
+    }
+
+    // Crie um novo imóvel com os dados recebidos do formulário
+    const novoImovel = await Imovel.create(imovelData);
+
+    res.status(201).json(novoImovel);
+  } catch (error) {
+    console.error('Erro ao cadastrar imóvel:', error);
+    res.status(500).json({ error: 'Erro ao cadastrar imóvel' });
+  }
+});
+
+const uploads = multer({ dest: 'uploads/' }); // Diretório onde as fotos serão salvas temporariamente
+app.post('/api/imoveis/fotos', uploads.array('fotos'), (req, res) => {
+  // req.files contém a lista de arquivos enviados
+  // Faça o que for necessário para salvar ou processar as fotos
+  console.log(req.files);
+
+  // Envie uma resposta adequada
+  res.status(200).send('Fotos recebidas com sucesso.');
 });
 
 // Configuração do multer para lidar com o upload de arquivos
