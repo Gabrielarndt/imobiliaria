@@ -1,25 +1,32 @@
-// register.js
-document.getElementById('registerForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    
+//CadastrarCliente.js
+
+document.getElementById('cadastroForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const userData = {
+        email: formData.get('email'),
+        password: formData.get('password')
+    };
+
     try {
-        const response = await fetch('/api/register', {
+        const response = await fetch('/api/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify(userData)
         });
-        
-        const data = await response.json();
-        if (response.ok) {
-            window.location.href = '/login.html';
-        } else {
-            document.getElementById('registerMessage').textContent = data.message;
+
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
         }
+
+        const responseData = await response.json();
+        alert(responseData.message); // Exibir mensagem de sucesso
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Erro ao cadastrar usuário:', error);
+        alert('Erro ao cadastrar usuário. Verifique os dados e tente novamente.');
     }
 });

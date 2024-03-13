@@ -1,7 +1,10 @@
+//index.js
+
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const multer = require('multer');
+const authRouter = require('./Back-End/back/controllers/authController');
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Define a porta do servidor
@@ -14,9 +17,20 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'index.html'));
 });
 
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'pages', 'login.html'));
+});
+
+app.get('/cadastro', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastroCliente.html'));
+});
+
 app.get('/cadastroImovel', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastro.html'));
 });
+
+app.use('/auth', authRouter); // Use o authRouter para lidar com rotas de autenticação
+
 
 app.get('/imoveis', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'lista.html'));

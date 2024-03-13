@@ -1,4 +1,5 @@
-// authController.js
+//authController.js
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
@@ -6,16 +7,16 @@ const User = require('../models/User');
 async function registerUser(req, res) {
     try {
         const { email, password } = req.body;
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ where: { email } });
         if (existingUser) {
             return res.status(400).json({ message: 'Email already in use' });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ email, password: hashedPassword });
-        await newUser.save();
+        await User.create({ email, password: hashedPassword });
         return res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.error('Error:', error);
+        return res.status(500).json({ message: 'Internal server error' });
     }
 }
 
@@ -46,4 +47,14 @@ async function loginUser(req, res) {
     }
 }
 
-module.exports = { registerUser, loginUser };
+async function logoutUser(req, res) {
+    try {
+        // Implemente a lógica de logout aqui, se necessário
+        return res.status(200).json({ message: 'User logged out successfully' });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+module.exports = { registerUser, loginUser, logoutUser };
