@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       card.innerHTML = `
           <div class="card">
-              <img src="http://localhost:3000/uploads/${imovel.fotos[0]}" alt="Imagem do Imóvel" class="card-img-top">
+              <img src="http://localhost:3000/api/imoveis/imagens/${imovel.id}" alt="Imagem do Imóvel" class="card-img-top">
               <div class="card-body">
                   <h5 class="card-title">${imovel.titulo}</h5>
                   <p class="card-text">${imovel.descricao}</p>

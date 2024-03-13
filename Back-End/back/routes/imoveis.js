@@ -42,7 +42,27 @@ router.get('/:id', async (req, res) => {
             return res.status(404).json({ message: 'Imóvel não encontrado' });
         }
 
-        res.status(200).json(imovel);
+        // Converter os dados das imagens em URLs acessíveis
+        const imagensUrls = imovel.fotos.map(imagem => `/api/imoveis/imagens/${imagem.name}`);
+
+        // Criar um objeto de resposta com os detalhes do imóvel e as URLs das imagens
+        const resposta = {
+            id: imovel.id,
+            titulo: imovel.titulo,
+            descricao: imovel.descricao,
+            tipo: imovel.tipo,
+            quartos: imovel.quartos,
+            suites: imovel.suites,
+            preco: imovel.preco,
+            cidade: imovel.cidade,
+            bairro: imovel.bairro,
+            rua: imovel.rua,
+            status: imovel.status,
+            fotos: imagensUrls
+            // Adicione outros detalhes do imóvel conforme necessário
+        };
+                
+        res.status(200).json(resposta);
     } catch (error) {
         console.error('Erro ao obter detalhes do imóvel:', error);
         res.status(500).json({ error: 'Erro ao obter detalhes do imóvel' });
