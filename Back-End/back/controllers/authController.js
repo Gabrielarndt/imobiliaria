@@ -1,20 +1,15 @@
-// controllers/authController.js
-
+// authController.js
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User'); // Importe o modelo de usuário adequado
-const passport = require('../passport');
+const User = require('../models/User');
 
-// Controlador para registro de usuário
 async function registerUser(req, res) {
     try {
         const { email, password } = req.body;
-        // Verifique se o email já está em uso
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: 'Email already in use' });
         }
-        // Crie um novo usuário
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({ email, password: hashedPassword });
         await newUser.save();
@@ -24,30 +19,31 @@ async function registerUser(req, res) {
     }
 }
 
-// Controlador para login de usuário
-function loginUser(req, res, next) {
-    passport.authenticate('local', { session: false }, (err, user, info) => {
-        if (err) {
-            return res.status(500).json({ message: err.message });
-        }
+async function loginUser(req, res) {
+    try {
+        const { email, password } = req.body;
+        
+        // Encontre o usuário no banco de dados pelo email
+        const user = await User.findOne({ email });
         if (!user) {
-            return res.status(401).json({ message: info.message });
+            return res.status(401).json({ message: 'Incorrect email or password' });
         }
-        req.login(user, { session: false }, (err) => {
-            if (err) {
-                return res.status(500).json({ message: err.message });
-            }
-            // Gere um token JWT
-            const token = jwt.sign({ id: user._id }, 'seu_segredo');
-            return res.status(200).json({ token });
-        });
-    })(req, res, next);
+
+        // Verifique se a senha fornecida corresponde à senha armazenada no banco de dados
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) {
+            return res.status(401).json({ message: 'Incorrect email or password' });
+        }
+
+        // Gere um token JWT
+        const token = jwt.sign({ id: user.id }, 'seu_segredo', { expiresIn: '1h' });
+
+        // Envie o token JWT como resposta
+        res.status(200).json({ token });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 }
 
-// Controlador para logout de usuário
-function logoutUser(req, res) {
-    req.logout();
-    return res.status(200).json({ message: 'User logged out successfully' });
-}
-
-module.exports = { registerUser, loginUser, logoutUser };
+module.exports = { registerUser, loginUser };

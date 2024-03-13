@@ -1,11 +1,11 @@
-// register.js
-document.getElementById('registerForm').addEventListener('submit', async (e) => {
+// login.js
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     
     try {
-        const response = await fetch('/api/register', {
+        const response = await fetch('/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -15,9 +15,10 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         
         const data = await response.json();
         if (response.ok) {
-            window.location.href = '/login.html';
+            localStorage.setItem('token', data.token);
+            window.location.href = '/dashboard.html';
         } else {
-            document.getElementById('registerMessage').textContent = data.message;
+            document.getElementById('loginMessage').textContent = data.message;
         }
     } catch (error) {
         console.error('Error:', error);
