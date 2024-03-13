@@ -68,9 +68,31 @@ document.getElementById('fotos').addEventListener('change', (event) => {
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    // Obter os dados do formulário, exceto as fotos
-    const formData = new FormData(form);
     const jsonData = {};
+    const formData = new FormData(form);
+
+    const filesData = [];
+    
+    const files = document.getElementById('fotos').files;
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        filesData.push({
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            file: file
+        });
+    }
+
+    // Verificar se já existem fotos em jsonData['fotos']
+    if (jsonData['fotos']) {
+        // Se já existirem, adicione as novas fotos à lista existente
+        jsonData['fotos'] = jsonData['fotos'].concat(filesData);
+    } else {
+        // Se não existirem, defina as novas fotos como a lista de fotos
+        jsonData['fotos'] = filesData;
+    }
+
     formData.forEach((value, key) => {
         if (key !== 'fotos') {
             jsonData[key] = value;
@@ -78,7 +100,6 @@ form.addEventListener('submit', async (event) => {
     });
 
     try {
-        // Enviar os dados do formulário (exceto as fotos)
         const response = await fetch('http://localhost:3000/api/imoveis', {
             method: 'POST',
             headers: {
@@ -87,31 +108,13 @@ form.addEventListener('submit', async (event) => {
             body: JSON.stringify(jsonData)
         });
 
-        if (!response.ok) {
-            throw new Error('Erro ao enviar dados do formulário');
+        if (response.ok) {
+            window.location.href = '/sucesso';
+        } else {
+            console.error('Erro ao cadastrar imóvel:', response.statusText);
         }
-
-        // Obter as fotos do formulário
-        const files = document.getElementById('fotos').files;
-
-        // Enviar as fotos
-        const formDataFotos = new FormData();
-        for (const file of files) {
-            formDataFotos.append('fotos', file);
-        }
-
-        const responseFotos = await fetch('http://localhost:3000/api/imoveis/fotos', {
-            method: 'POST',
-            body: formDataFotos
-        });
-
-        if (!responseFotos.ok) {
-            throw new Error('Erro ao enviar fotos');
-        }
-
-        // Redirecionar para a página de sucesso se tudo correr bem
-        window.location.href = '/sucesso';
     } catch (error) {
         console.error('Erro ao cadastrar imóvel:', error);
     }
 });
+

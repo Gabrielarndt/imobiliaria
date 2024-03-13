@@ -7,7 +7,6 @@ const app = express();
 const PORT = process.env.PORT || 3000; // Define a porta do servidor
 
 app.use(cors());
-// Configuração para servir arquivos estáticos
 app.use(express.static(path.join(__dirname, 'src')));
 
 
@@ -16,7 +15,11 @@ app.get('/', (req, res) => {
 });
 
 app.get('/cadastroImovel', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src', 'pages','cadastro.html'));
+  res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastro.html'));
+});
+
+app.get('/imoveis', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'pages', 'lista.html'));
 });
 
 app.post('/imoveis', async (req, res) => {
@@ -44,33 +47,36 @@ app.post('/imoveis', async (req, res) => {
   }
 });
 
-const uploads = multer({ dest: 'uploads/' }); // Diretório onde as fotos serão salvas temporariamente
-app.post('/api/imoveis/fotos', uploads.array('fotos'), (req, res) => {
-  // req.files contém a lista de arquivos enviados
-  // Faça o que for necessário para salvar ou processar as fotos
-  console.log(req.files);
-
-  // Envie uma resposta adequada
-  res.status(200).send('Fotos recebidas com sucesso.');
-});
-
 // Configuração do multer para lidar com o upload de arquivos
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-      cb(null, 'uploads/'); // Define o diretório onde os arquivos serão salvos
+    cb(null, 'uploads/'); // Define o diretório onde os arquivos serão salvos
   },
   filename: function (req, file, cb) {
-      // Define o nome do arquivo no diretório de destino
-      cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    // Define o nome do arquivo no diretório de destino
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
   }
 });
 
 const upload = multer({ storage: storage });
 
-// Rota para lidar com o upload de arquivos
-app.post('/upload', upload.array('fotos'), (req, res) => {
-  console.log('Arquivos recebidos:', req.files); // Exibe os arquivos recebidos no console
-  res.send('Arquivos recebidos com sucesso!');
+// Rota para lidar com o upload de imagens de imóveis
+app.post('/api/imoveis/fotos', upload.array('fotos'), async (req, res) => {
+  try {
+    // Verifica se há arquivos enviados na requisição
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: 'Nenhuma imagem foi enviada.' });
+    }
+
+    // Extrai os nomes dos arquivos enviados
+    const fotosNomes = req.files.map(file => file.filename);
+
+    // Retorna os nomes das imagens para o cliente
+    res.status(200).json({ fotos: fotosNomes });
+  } catch (error) {
+    console.error('Erro ao fazer upload de imagens:', error);
+    res.status(500).json({ error: 'Erro ao fazer upload de imagens.' });
+  }
 });
 
 
