@@ -29,7 +29,7 @@ const createUser = async (userData) => {
   try {
     const { username, email, password } = userData;
     const hashedPassword = await hashPassword(password);
-    const user = await User.create({ username, email, password: hashedPassword });
+    const user = await User.create({ username, email, phone, password: hashedPassword });
     return user;
   } catch (error) {
     throw new Error('Erro ao criar usuário');

@@ -4,7 +4,8 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const multer = require('multer');
-const authRouter = require('./Back-End/back/controllers/authController');
+const passport = require('./Back-End/back/passport'); // Importe o seu arquivo passport.js
+const authRouter = require('./Back-End/back/routes/authRoutes'); // Importe as suas rotas de autenticação
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Define a porta do servidor
@@ -29,6 +30,9 @@ app.get('/cadastroImovel', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastro.html'));
 });
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(passport.initialize());
 app.use('/auth', authRouter); // Use o authRouter para lidar com rotas de autenticação
 
 
@@ -99,6 +103,7 @@ const server = app.listen(PORT, () => {
 });
 
 const imoveisRouter = require('./Back-End/back/routes/imoveis');
+const bodyParser = require('body-parser');
 app.use(express.json());
 
 // Rotas

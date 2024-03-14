@@ -1,13 +1,12 @@
-//CadastrarCliente.js
-
 document.getElementById('cadastroForm').addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const formData = new FormData(event.target);
-    const userData = {
-        email: formData.get('email'),
-        password: formData.get('password')
-    };
+    const jsonData = {};
+
+    formData.forEach((value, key) => {
+        jsonData[key] = value;
+    });
 
     try {
         const response = await fetch('/api/auth/register', {
@@ -15,7 +14,7 @@ document.getElementById('cadastroForm').addEventListener('submit', async (event)
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(userData)
+            body: JSON.stringify(jsonData)
         });
 
         if (!response.ok) {
