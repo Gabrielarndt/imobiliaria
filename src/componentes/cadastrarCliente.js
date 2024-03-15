@@ -1,3 +1,5 @@
+// CadastroUser.js
+
 document.getElementById('cadastroForm').addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -19,11 +21,12 @@ document.getElementById('cadastroForm').addEventListener('submit', async (event)
 
         if (!response.ok) {
             const errorMessage = await response.text();
-            throw new Error(errorMessage);
+            alert(errorMessage); // Exibe mensagem de erro da API
+            return;
         }
 
         const responseData = await response.json();
-        alert(responseData.message); // Exibir mensagem de sucesso
+        alert(responseData.message); // Exibe mensagem de sucesso
     } catch (error) {
         console.error('Erro ao cadastrar usuário:', error);
         alert('Erro ao cadastrar usuário. Verifique os dados e tente novamente.');

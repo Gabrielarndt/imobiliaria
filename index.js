@@ -1,21 +1,32 @@
-//index.js
-
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const multer = require('multer');
 const passport = require('./Back-End/back/passport'); // Importe o seu arquivo passport.js
 const authRouter = require('./Back-End/back/routes/authRoutes'); // Importe as suas rotas de autenticação
+const imoveisRouter = require('./Back-End/back/routes/imoveis');
+const bodyParser = require('body-parser');
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Define a porta do servidor
 
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'src')));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(passport.initialize());
 
+// Defina as rotas
+app.use('/api/auth', authRouter); // Use o authRouter para lidar com rotas de autenticação
+app.use('/api/imoveis', imoveisRouter);
 
+// Rotas para servir páginas HTML
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'index.html'));
+});
+
+app.get('/cadastroImovel', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastro.html'));
 });
 
 app.get('/login', (req, res) => {
@@ -26,43 +37,8 @@ app.get('/cadastro', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastroCliente.html'));
 });
 
-app.get('/cadastroImovel', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastro.html'));
-});
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(passport.initialize());
-app.use('/auth', authRouter); // Use o authRouter para lidar com rotas de autenticação
-
-
 app.get('/imoveis', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'lista.html'));
-});
-
-app.post('/imoveis', async (req, res) => {
-  try {
-    const imovelData = req.body;
-
-    // Adicione as fotos ao objeto imovelData, se estiverem presentes na requisição
-    if (req.files && req.files.length > 0) {
-      // Salvar as fotos no diretório de uploads e adicionar os nomes dos arquivos ao objeto imovelData
-      const fotosNomes = req.files.map(file => {
-        const novoNome = `${Date.now()}_${file.originalname}`;
-        file.mv(`uploads/${novoNome}`);
-        return novoNome;
-      });
-      imovelData.fotos = fotosNomes;
-    }
-
-    // Crie um novo imóvel com os dados recebidos do formulário
-    const novoImovel = await Imovel.create(imovelData);
-
-    res.status(201).json(novoImovel);
-  } catch (error) {
-    console.error('Erro ao cadastrar imóvel:', error);
-    res.status(500).json({ error: 'Erro ao cadastrar imóvel' });
-  }
 });
 
 // Configuração do multer para lidar com o upload de arquivos
@@ -97,16 +73,9 @@ app.post('/api/imoveis/fotos', upload.array('fotos'), async (req, res) => {
   }
 });
 
-
+// Inicie o servidor
 const server = app.listen(PORT, () => {
   console.log(`Servidor iniciado na porta ${PORT}`);
 });
-
-const imoveisRouter = require('./Back-End/back/routes/imoveis');
-const bodyParser = require('body-parser');
-app.use(express.json());
-
-// Rotas
-app.use('/api/imoveis', imoveisRouter);
 
 module.exports = { app, server };

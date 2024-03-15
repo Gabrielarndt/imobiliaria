@@ -7,36 +7,46 @@ const User = require('../models/User');
 async function registerUser(req, res) {
     try {
         const { email, password, username, phone } = req.body;
-        const existingUser = await User.findOne({ where: { email } });
-        if (existingUser) {
-            return res.status(400).json({ message: 'Email already in use' });
+
+        // Verifique se o email já está em uso
+        const existingUserEmail = await User.findOne({ where: { email } });
+        if (existingUserEmail) {
+            return res.status(400).json({ message: 'Email já em uso' });
         }
+
+        // Verifique se o telefone já está em uso
+        const existingUserPhone = await User.findOne({ where: { phone } });
+        if (existingUserPhone) {
+            return res.status(400).json({ message: 'Número de telefone já em uso' });
+        }
+
+        // Aqui você pode adicionar a validação para o formato de email, se necessário
+
         const hashedPassword = await bcrypt.hash(password, 10);
         await User.create({ email, username, phone, password: hashedPassword });
-        return res.status(201).json({ message: 'User registered successfully' });
+        return res.status(201).json({ message: 'Usuário registrado com sucesso!' });
     } catch (error) {
         console.error('Error:', error);
-        return res.status(500).json({ message: 'Internal server error' });
+        return res.status(500).json({ message: 'Cadastro inválido, verifique as informações' });
     }
 }
+
+
 
 async function loginUser(req, res) {
     try {
         const { email, password } = req.body;
         
-        // Encontre o usuário no banco de dados pelo email
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(401).json({ message: 'Incorrect email or password' });
+            return res.status(401).json({ message: 'Email ou senha incorreto' });
         }
 
-        // Verifique se a senha fornecida corresponde à senha armazenada no banco de dados
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
-            return res.status(401).json({ message: 'Incorrect email or password' });
+            return res.status(401).json({ message: 'Email ou senha incorreto' });
         }
 
-        // Gere um token JWT
         const token = jwt.sign({ id: user.id }, 'seu_segredo', { expiresIn: '1h' });
 
         // Envie o token JWT como resposta
@@ -50,7 +60,7 @@ async function loginUser(req, res) {
 async function logoutUser(req, res) {
     try {
         // Implemente a lógica de logout aqui, se necessário
-        return res.status(200).json({ message: 'User logged out successfully' });
+        return res.status(200).json({ message: 'Logout efetuado com sucesso' });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ message: 'Internal server error' });

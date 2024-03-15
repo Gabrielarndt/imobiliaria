@@ -1,24 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Usuário</title>
-</head>
-<body>
-    <h1>Cadastro de Usuário</h1>
-    <form id="cadastroForm">
-        <label for="username">Nome:</label><br>
-        <input type="username" id="username" name="username" required><br>
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br>
-        <label for="phone">Fone:</label><br>
-        <input type="phone" id="phone" name="phone" required><br>
-        <label for="password">Senha:</label><br>
-        <input type="password" id="password" name="password" required><br>
-        <button type="submit">Cadastrar</button>
-    </form>
+    <title>Cadastro</title>
+    <link rel='stylesheet' href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Poppins&amp;display=swap'>
+    <link rel="stylesheet" href="../styles/styleCliente.css">
 
+</head>
+
+<body>
+    <!-- partial:index.partial.html -->
+    <form id="cadastroForm">
+    <div class="wrapper">
+        <div class="login_box">
+            <div class="cadastro-header">
+                <span>Cadastrar</span>
+            </div>
+
+            <div class="input_box">
+                <input type="username" id="username" name="username" id="username" class="input-field"
+                    required>
+                <label for="username" class="label">Username</label>
+                <i class="bx bx-user icon"></i>
+            </div>
+            
+            <div class="input_box">
+                <input type="email" id="email" name="email" id="username" class="input-field" required>
+                <label for="email" class="label">Email</label>
+                <i class='bx bxs-envelope icon'></i>
+            </div>
+
+            <div class="input_box">
+                <input type="phone" id="phone" name="phone" required class="input-field" required>
+                <label for="phone" class="label">Telefone</label>
+                <i class='bx bx-phone icon'></i>
+            </div>
+
+            <div class="input_box">
+                <input type="password" id="password" name="password" required class="input-field" required>
+                <label for="pass" class="label">Password</label>
+                <i class="bx bx-lock-alt icon"></i>
+            </div>
+
+            <div class="input_box">
+                <button type="submit" class="input-submit">Cadastrar</button>
+            </div>
+
+            <div class="register">
+                <span>Já tem uma conta? <a href="/login">Login</a></span>
+            </div>
+        </div>
+    </div>
+</form>
+    <!-- partial -->
     <script src="../componentes/CadastrarCliente.js"></script>
 </body>
+
 </html>
