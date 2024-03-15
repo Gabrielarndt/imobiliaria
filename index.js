@@ -6,6 +6,7 @@ const passport = require('./Back-End/back/passport'); // Importe o seu arquivo p
 const authRouter = require('./Back-End/back/routes/authRoutes'); // Importe as suas rotas de autenticação
 const imoveisRouter = require('./Back-End/back/routes/imoveis');
 const bodyParser = require('body-parser');
+const loginUser = require('./Back-End/back/controllers/authController'); // Importe as suas rotas de autenticação
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Define a porta do servidor
@@ -16,9 +17,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 
-// Defina as rotas
-app.use('/api/auth', authRouter); // Use o authRouter para lidar com rotas de autenticação
 app.use('/api/imoveis', imoveisRouter);
+app.use('/api/auth', authRouter); // Use o authRouter para lidar com rotas de autenticação
+app.post('/api/auth/login', loginUser); // Rota para lidar com o login de usuários
 
 // Rotas para servir páginas HTML
 app.get('/', (req, res) => {

@@ -6,73 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Imóveis</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Adicionando estilos personalizados */
-        body {
-            background-color: #f8f9fa;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            margin-top: 50px;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        label {
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-        }
-
-        button[type="submit"] {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-
-        /* Estilos para a seção de fotos selecionadas */
-        #selected-photos-container {
-            margin-top: 20px;
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        #selected-photos-container img {
-            max-width: 100px;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-
-        .photo-navigation {
-            margin-top: 10px;
-        }
-    </style>
+   <link rel="stylesheet" href="../styles/styleImovel.css">
 </head>
 
 <body>
@@ -120,12 +54,20 @@
 
             <div class="form-group">
                 <label for="cidade">Cidade:</label>
-                <input type="text" id="cidade" name="cidade" class="form-control" required>
+                <select class="form-select" id="cidade" name="cidade">
+                    <option value="">Todas as cidades</option>
+                    <option value="itajai" id="itajai">Itajaí</option>
+                    <option value="balneario-camboriu" id="balneario-camboriu">Balneário Camboriú</option>
+                    <option value="itapema" id="itapema">Itapema</option>
+                </select>
             </div>
 
             <div class="form-group">
                 <label for="bairro">Bairro:</label>
-                <input type="text" id="bairro" name="bairro" class="form-control" required>
+                <select class="form-select" id="bairro" name="bairro">
+                    <option value="">Bairro</option>
+                    <!-- Opções de bairro carregadas dinamicamente após escolha da cidade -->
+                </select>
             </div>
 
             <div class="form-group">
@@ -147,8 +89,8 @@
             <button type="submit" class="btn btn-primary">Cadastrar Imóvel</button>
         </form>
     </div>
-
-    <script src="../componentes/CadastarImovel.js"></script>
+    <script src="../services/bairros.js"></script>
+    <script src="../componentes/CadastrarImovel.js"></script>
 
 </body>
 

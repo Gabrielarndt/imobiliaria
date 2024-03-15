@@ -1,11 +1,10 @@
-// login.js
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     
     try {
-        const response = await fetch('/api/login', {
+        const response = await fetch('/api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -16,7 +15,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         const data = await response.json();
         if (response.ok) {
             localStorage.setItem('token', data.token);
-            window.location.href = '/dashboard.html';
+            window.location.href = '/';
         } else {
             document.getElementById('loginMessage').textContent = data.message;
         }

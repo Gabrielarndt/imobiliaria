@@ -1,4 +1,4 @@
-import { getImoveis } from './api.js';
+const { getImoveis } = require('./services/utilitarios/api');
 
 // Suponha que você tenha uma função para fazer login e obter o token
 async function loginUser(email, password) {

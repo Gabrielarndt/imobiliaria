@@ -1,6 +1,8 @@
+// api.js
+
 const API_URL = 'http://localhost:3000/api/imoveis';
 
-export async function getImoveis(token) {
+async function getImoveis(token) {
   try {
     const response = await fetch(API_URL, {
       headers: {
@@ -18,3 +20,4 @@ export async function getImoveis(token) {
     throw error;
   }
 }
+module.exports = { getImoveis };
