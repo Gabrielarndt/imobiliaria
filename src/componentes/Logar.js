@@ -1,25 +1,27 @@
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+document.getElementById('loginForm').addEventListener('submit', async (event) => {
+    event.preventDefault(); // Impede o comportamento padrão de envio do formulário
+
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    
+
     try {
-        const response = await fetch('/api/auth/login', {
+        const response = await fetch('/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ email, password })
         });
-        
-        const data = await response.json();
+
         if (response.ok) {
-            localStorage.setItem('token', data.token);
-            window.location.href = '/';
+            // Redirecionar para a página inicial após o login
+            window.location.href = '/'; // Substitua '/' pela rota desejada
+        } else if (response.status === 401) {
+            console.error('Erro ao fazer login:', response.statusText);
         } else {
-            document.getElementById('loginMessage').textContent = data.message;
+            console.error('Erro ao fazer login:', response.statusText);
         }
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Erro ao fazer login:', error);
     }
 });

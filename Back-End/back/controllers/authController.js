@@ -37,7 +37,7 @@ async function loginUser(req, res) {
     try {
         const { email, password } = req.body;
         
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ where: { email } });
         if (!user) {
             return res.status(401).json({ message: 'Email ou senha incorreto' });
         }
