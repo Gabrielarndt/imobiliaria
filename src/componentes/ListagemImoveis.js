@@ -1,3 +1,5 @@
+//ListagemImoveis
+
 document.addEventListener('DOMContentLoaded', async () => {
   const response = await fetch('http://localhost:3000/api/imoveis');
   const data = await response.json();
@@ -8,6 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       card.classList.add('col-md-4', 'mb-3');
 
       card.innerHTML = `
+      
           <div class="card">
               <img src="http://localhost:3000/api/imoveis/imagens/${imovel.id}" alt="Imagem do Imóvel" class="card-img-top">
               <div class="card-body">
@@ -16,6 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                   <p class="card-text">${imovel.tipo}</p>
                   <p class="card-text">${imovel.preco}</p>
                   <a href="detalhes.html?id=${imovel.id}" class="btn btn-primary">Detalhes</a>
+                  <i class="fas fa-heart" onclick="toggleFavorite(${userId}, ${imovel.id})"></i>
               </div>
           </div>
       `;
@@ -23,3 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       imoveisLista.appendChild(card);
   });
 });
+
+function getUserId() {
+    return localStorage.getItem('userId');
+  }
