@@ -73,9 +73,11 @@
             // Redirecionar para a página inicial após o login
             window.location.href = '/'; // Substitua '/' pela rota desejada
         } else {
+            alert('Email ou senha incorretos. Por favor, tente novamente.');
             console.error('Erro ao fazer login:', response.statusText);
         }
     } catch (error) {
+        alert('Email ou senha incorretos. Por favor, tente novamente.');
         console.error('Erro ao fazer login:', error);
     }
 });

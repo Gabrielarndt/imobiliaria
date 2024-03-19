@@ -1,4 +1,4 @@
-// api.js
+// services/utiliarios/api.js
 
 const API_URL = 'http://localhost:3000/api/imoveis';
 

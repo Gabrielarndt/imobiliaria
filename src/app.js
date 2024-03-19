@@ -1,11 +1,11 @@
 //app.js
 
-import { getImoveis } from './services/utilitarios/api';
+const { getImoveis } = require('./services/utilitarios/api');
 
 // Suponha que você tenha uma função para fazer login e obter o token
 async function loginUser(email, password) {
   try {
-    const response = await fetch('http://localhost:3000/api/login', {
+    const response = await fetch('http://localhost:3000/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -83,19 +83,24 @@ function handleError(error) {
 }
 
 // Suponha que você tenha uma função para lidar com o sucesso do login
-async function handleLoginSuccess(email, password) {
+async function handleLoginSuccess() {
+  // Suponha que você tenha campos de email e senha no seu formulário com os IDs 'email' e 'password'
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
   try {
-    const token = await loginUser(email, password);
-    const userDetails = await getUserDetails(token);
-    const imoveis = await getImoveis(userDetails.token);
-    displayImoveis(imoveis);
+      const token = await loginUser(email, password);
+      const imoveis = await getImoveis(token);
+      displayImoveis(imoveis);
   } catch (error) {
-    handleError(error);
+      alert('Erro ao fazer login. Verifique seu e-mail e senha.');
+      handleError(error);
   }
 }
 
-// Suponha que você tenha um formulário de login com campos de email e senha
-const email = 'email_do_cliente';
-const password = 'senha_do_cliente';
+// Adicione um event listener para o formulário de login
+document.getElementById('loginForm').addEventListener('submit', async (event) => {
+  event.preventDefault(); // Impede o comportamento padrão de envio do formulário
+  handleLoginSuccess();
+});
 
-handleLoginSuccess(email, password);

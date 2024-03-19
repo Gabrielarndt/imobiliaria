@@ -36,7 +36,7 @@ async function registerUser(req, res) {
 async function loginUser(req, res) {
     try {
         const { email, password } = req.body;
-        
+
         const user = await User.findOne({ where: { email } });
         if (!user) {
             return res.status(401).json({ message: 'Email ou senha incorreto' });
@@ -48,14 +48,13 @@ async function loginUser(req, res) {
         }
 
         const token = jwt.sign({ id: user.id }, 'seu_segredo', { expiresIn: '1h' });
-
-        // Envie o token JWT como resposta
         res.status(200).json({ token });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
 
 async function logoutUser(req, res) {
     try {
