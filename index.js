@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 3000; // Define a porta do servidor
 
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'src')));
+app.use(express.static(path.join(__dirname, 'dist'))); // Alterado para 'dist'
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
@@ -25,23 +25,27 @@ app.post('/api/auth/logout', authController.logoutUser); // Rota para logout de 
 
 // Rotas para servir páginas HTML
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src', 'pages', 'index.html'));
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
+app.get('/favoritos', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'favoritos.html'));
 });
 
 app.get('/cadastroImovel', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastro.html'));
-});
-
-app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src', 'pages', 'login.html'));
+  res.sendFile(path.join(__dirname, 'dist', 'cadastro.html'));
 });
 
 app.get('/cadastro', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastroCliente.html'));
+  res.sendFile(path.join(__dirname, 'dist', 'cadastroCliente.html'));
 });
 
 app.get('/imoveis', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src', 'pages', 'lista.html'));
+  res.sendFile(path.join(__dirname, 'dist', 'lista.html'));
+});
+
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'login.html'));
 });
 
 // Configuração do multer para lidar com o upload de arquivos
