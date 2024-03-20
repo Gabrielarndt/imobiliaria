@@ -1,16 +1,20 @@
+<!-- usuario.ejs -->
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página do Usuário</title>
 </head>
+
 <body>
     <% if (usuarioAutenticado) { %>
-        <h1>Bem-vindo, <%= usuario.nome %>!</h1>
+        <h1>Bem-vindo, <span id="nomeUsuario"></span>!</h1>
         <p>Seus detalhes:</p>
         <ul>
-            <li><strong>Email:</strong> <%= usuario.email %></li>
+            <li><strong>Email:</strong> <span id="emailUsuario"></span></li>
             <!-- Adicione mais informações do usuário conforme necessário -->
         </ul>
         <form action="/api/auth/logout" method="post">
@@ -21,5 +25,24 @@
         <p>Por favor, faça login para acessar esta página.</p>
         <a href="/login">Login</a>
     <% } %>
+
+    <script src="../app.js"></script>
+    <script>
+        async function displayUserDetails() {
+            try {
+                const userDetails = await getUserDetails();
+                // Atualiza o DOM com os detalhes do usuário
+                document.getElementById('nomeUsuario').textContent = userDetails.username;
+                document.getElementById('emailUsuario').textContent = userDetails.email;
+            } catch (error) {
+                console.error('Erro ao exibir detalhes do usuário:', error);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            displayUserDetails();
+        });
+    </script>
 </body>
+
 </html>

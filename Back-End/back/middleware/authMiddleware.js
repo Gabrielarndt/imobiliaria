@@ -2,7 +2,6 @@
 
 const passport = require('passport');
 
-// Middleware para autenticação com JWT
 function authenticateJWT(req, res, next) {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if (err) {

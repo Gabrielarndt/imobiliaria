@@ -1,8 +1,53 @@
 //app.js
+// Função para obter o token do localStorage
+function getToken() {
+  return localStorage.getItem('token');
+}
 
-const { getImoveis } = require('./services/utilitarios/api');
+// Função para fazer uma solicitação à rota '/usuario' usando o token de autorização
+async function getUserDetails() {
+  try {
+    const token = getToken();
+    if (!token) {
+      throw new Error('Token de autenticação não encontrado');
+    }
 
-// Suponha que você tenha uma função para fazer login e obter o token
+    const response = await fetch('/usuario', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Erro ao obter detalhes do usuário');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Erro ao obter detalhes do usuário:', error);
+    throw error;
+  }
+}
+
+
+// Suponha que você tenha uma função para exibir os detalhes do usuário
+async function displayUserDetails() {
+  try {
+    const userDetails = await getUserDetails();
+    // Aqui você pode exibir os detalhes do usuário no DOM
+  } catch (error) {
+    // Se houver algum erro ao obter os detalhes do usuário, você pode lidar com ele aqui
+    console.error('Erro ao exibir detalhes do usuário:', error);
+  }
+}
+
+// Chame a função displayUserDetails quando a página for carregada, por exemplo:
+window.addEventListener('DOMContentLoaded', () => {
+  displayUserDetails();
+});
+
 async function loginUser(email, password) {
   try {
     const response = await fetch('http://localhost:3000/api/auth/login', {
@@ -16,6 +61,8 @@ async function loginUser(email, password) {
     if (!response.ok) {
       throw new Error(data.message || 'Erro ao fazer login');
     }
+    // Armazena o token retornado no localStorage
+    localStorage.setItem('token', data.token);
     return data.token;
   } catch (error) {
     console.error('Erro ao fazer login:', error);
@@ -23,84 +70,26 @@ async function loginUser(email, password) {
   }
 }
 
-// Suponha que você tenha uma função para obter os detalhes do usuário após o login
-async function getUserDetails(token) {
-  try {
-    const response = await fetch('http://localhost:3000/api/user/details', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || 'Erro ao obter detalhes do usuário');
-    }
-    return data;
-  } catch (error) {
-    console.error('Erro ao obter detalhes do usuário:', error);
-    throw error;
-  }
-}
 
-function displayImoveis(imoveis) {
-  // Suponha que você tenha um elemento HTML onde os imóveis serão exibidos
-  const imoveisContainer = document.getElementById('imoveis-container');
-
-  // Limpa o conteúdo atual antes de exibir os novos imóveis
-  imoveisContainer.innerHTML = '';
-
-  // Itera sobre os imóveis e cria elementos HTML para cada um
-  imoveis.forEach(imovel => {
-    const imovelElement = document.createElement('div');
-    imovelElement.classList.add('imovel');
-
-    // Suponha que o objeto de imóvel tenha propriedades como título, descrição, preço, etc.
-    // Você pode acessar essas propriedades e exibi-las conforme necessário
-    const tituloElement = document.createElement('h2');
-    tituloElement.textContent = imovel.titulo;
-
-    const descricaoElement = document.createElement('p');
-    descricaoElement.textContent = imovel.descricao;
-
-    const precoElement = document.createElement('p');
-    precoElement.textContent = `Preço: ${imovel.preco}`;
-
-    // Adicione os elementos criados ao contêiner de imóveis
-    imovelElement.appendChild(tituloElement);
-    imovelElement.appendChild(descricaoElement);
-    imovelElement.appendChild(precoElement);
-
-    imoveisContainer.appendChild(imovelElement);
-  });
-}
-
-// Função para lidar com erros
-function handleError(error) {
-  // Suponha que você tenha um elemento HTML para exibir mensagens de erro
-  const errorContainer = document.getElementById('error-container');
-  errorContainer.textContent = `Erro: ${error.message}`;
-}
-
-// Suponha que você tenha uma função para lidar com o sucesso do login
-async function handleLoginSuccess() {
-  // Suponha que você tenha campos de email e senha no seu formulário com os IDs 'email' e 'password'
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-
-  try {
-      const token = await loginUser(email, password);
-      const imoveis = await getImoveis(token);
-      displayImoveis(imoveis);
-  } catch (error) {
-      alert('Erro ao fazer login. Verifique seu e-mail e senha.');
-      handleError(error);
-  }
-}
-
-// Adicione um event listener para o formulário de login
+// Event listener para o formulário de login
 document.getElementById('loginForm').addEventListener('submit', async (event) => {
   event.preventDefault(); // Impede o comportamento padrão de envio do formulário
-  handleLoginSuccess();
+  
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  
+  try {
+    const token = await loginUser(email, password);
+    // Exibe uma mensagem de sucesso para o usuário
+    alert('Login bem-sucedido!');
+    // Você também pode redirecionar o usuário para outra página após o login, se necessário
+    // window.location.href = '/outra_pagina';
+  } catch (error) {
+    console.error('Erro ao fazer login:', error);
+    // Exibe uma mensagem de erro para o usuário, informando que o login falhou
+    alert('Erro ao fazer login. Verifique seu e-mail e senha.');
+  }
 });
+
+
 

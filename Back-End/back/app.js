@@ -28,7 +28,7 @@ app.use(
   const jwt = require('jsonwebtoken');
 
 // Chave secreta para assinar o token JWT (geralmente deve ser mantida em um ambiente seguro)
-const JWT_SECRET = 'abacaxinhos';
+const JWT_SECRET = 'seu_segredo';
 
 // Função para gerar um token JWT
 const generateToken = (user) => {
