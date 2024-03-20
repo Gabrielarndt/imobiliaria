@@ -7,11 +7,11 @@ const imoveisRouter = require('./Back-End/back/routes/imoveis');
 const bodyParser = require('body-parser');
 const authController = require('./Back-End/back/controllers/authController'); // Importe o controlador de autenticação
 const User = require('./Back-End/back/models/User');
-const { verificaToken } = require('./Back-End/back/middleware/authMiddleware');
-
+const passport = require('./Back-End/back/passport');
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Define a porta do servidor
+app.use(passport.initialize());
 
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'src')));
@@ -42,24 +42,21 @@ app.get('/cadastro', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastroCliente.html'));
 });
 
-app.get('/login', verificaToken, (req, res) => {
+app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'login.html'));
-  res.send('Você está autenticado');
 });
 
-const novoToken = jwt.sign({ userId: usuario.id }, 'seu_segredo', { expiresIn: '1h' });
-
 // Rota protegida que requer autenticação
-app.get('/usuario', verificaToken, async (req, res) => {
+app.get('/usuario', passport.authenticate('jwt', { session: false }), async (req, res) => {
   try {
-    // Se o token for válido, retorne os detalhes do usuário
-    const usuario = await obterDetalhesUsuario(req.userId); // Supondo que você tenha uma função para obter os detalhes do usuário
+    const usuario = await obterDetalhesUsuario(req.user._id);
     res.json(usuario);
   } catch (error) {
     console.error('Erro ao obter detalhes do usuário:', error);
     res.status(500).json({ message: 'Erro ao obter detalhes do usuário' });
   }
 });
+
 
 async function obterDetalhesUsuario(userId) {
   try {

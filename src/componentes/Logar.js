@@ -1,5 +1,3 @@
-localStorage.setItem('token', seuToken);
-
 document.getElementById('loginForm').addEventListener('submit', async (event) => {
     event.preventDefault(); // Impede o comportamento padrão de envio do formulário
 
@@ -16,28 +14,25 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
         });
 
         if (response.ok) {
-            // Extrair os dados do usuário da resposta
-            const userData = await response.json();
-            const userId = userData.id;
-            const username = userData.username;
+            // Extrair o token da resposta
+            const data = await response.json();
+            const token = data.token;
+            console.log('Token recebido:', token);
 
-            // Defina os dados do usuário na sessão
-            const user = {
-                id: userId,
-                username: username
-            };
-            sessionStorage.setItem('user', JSON.stringify(user));
+            // Armazenar o token no localStorage ou em outro lugar, conforme necessário
+            localStorage.setItem('token', token);
 
-            // Redirecionar para a página do usuário
+            // Redirecionar para outra página ou realizar outras ações, conforme necessário
             window.location.href = '/usuario';
         } else if (response.status === 401) {
             // Exibir alerta de credenciais incorretas
             alert('Email ou senha incorretos. Por favor, tente novamente.');
         } else {
             console.error('Erro ao fazer login:', response.statusText);
-            alert('Email ou senha incorretos. Por favor, tente novamente.');
+            alert('Erro ao fazer login. Por favor, tente novamente.');
         }
     } catch (error) {
         console.error('Erro ao fazer login:', error);
+        alert('Erro ao fazer login. Por favor, tente novamente.');
     }
 });

@@ -27,20 +27,24 @@ passport.use(new LocalStrategy({
     }
 }));
 
-// Configuração da estratégia JWT
-passport.use(new JwtStrategy({
+const options = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: 'seu_segredo'
-}, async (jwtPayload, done) => {
+    secretOrKey: 'seu_segredo', // Sua chave secreta para verificar o token
+  };
+  
+  passport.use(new JwtStrategy(options, async (payload, done) => {
     try {
-        const user = await User.findById(jwtPayload.id);
-        if (!user) {
-            return done(null, false, { message: 'User not found' });
-        }
+      const user = await User.findById(payload.userId);
+      if (user) {
         return done(null, user);
+      } else {
+        return done(null, false);
+      }
     } catch (error) {
-        return done(error);
+      return done(error, false);
     }
-}));
+  }));
+  
+  
 
 module.exports = passport;

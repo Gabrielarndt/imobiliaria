@@ -26,8 +26,24 @@
         <a href="/login">Login</a>
     <% } %>
 
-    <script src="../app.js"></script>
     <script>
+        async function getUserDetails() {
+            try {
+                const response = await fetch('/usuario', {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Erro ao obter detalhes do usuário');
+                }
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                throw error;
+            }
+        }
+
         async function displayUserDetails() {
             try {
                 const userDetails = await getUserDetails();
