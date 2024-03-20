@@ -14,8 +14,20 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
         });
 
         if (response.ok) {
-            // Redirecionar para a página inicial após o login
-            window.location.href = '/'; // Substitua '/' pela rota desejada
+            // Extrair os dados do usuário da resposta
+            const userData = await response.json();
+            const userId = userData.id;
+            const username = userData.username;
+
+            // Defina os dados do usuário na sessão
+            const user = {
+                id: userId,
+                username: username
+            };
+            sessionStorage.setItem('user', JSON.stringify(user));
+
+            // Redirecionar para a página do usuário
+            window.location.href = '/usuario';
         } else if (response.status === 401) {
             // Exibir alerta de credenciais incorretas
             alert('Email ou senha incorretos. Por favor, tente novamente.');

@@ -2,10 +2,10 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const multer = require('multer');
-const passport = require('./Back-End/back/passport'); // Importe o seu arquivo passport.js
+const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
 const authRouter = require('./Back-End/back/routes/authRoutes'); // Importe as suas rotas de autenticação
 const imoveisRouter = require('./Back-End/back/routes/imoveis');
-const bodyParser = require('body-parser');
 const authController = require('./Back-End/back/controllers/authController'); // Importe o controlador de autenticação
 
 const app = express();
@@ -15,17 +15,38 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'src')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(passport.initialize());
 
-app.use('/api/imoveis', imoveisRouter);
+// Rota para autenticação de usuários
 app.use('/api/auth', authRouter); // Use o authRouter para lidar com rotas de autenticação
 app.post('/api/auth/login', authController.loginUser); // Rota para login de usuários
 app.post('/api/auth/register', authController.registerUser); // Rota para registro de usuários
-app.post('/api/auth/logout', authController.logoutUser); // Rota para logout de usuários
+
+// Middleware para verificar o token JWT
+function verificaAutenticacao(req, res, next) {
+  // Extrai o token do cabeçalho Authorization
+  const token = req.headers.authorization;
+  
+  if (!token) {
+    return res.status(401).json({ message: 'Token de autenticação não fornecido' });
+  }
+
+  try {
+    // Verifica se o token é válido
+    const decoded = jwt.verify(token, 'seu_segredo');
+    req.user = decoded.user;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Token de autenticação inválido' });
+  }
+}
 
 // Rotas para servir páginas HTML
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'index.html'));
+});
+
+app.get('/imoveis', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'pages', 'lista.html'));
 });
 
 app.get('/cadastroImovel', (req, res) => {
@@ -36,12 +57,13 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'login.html'));
 });
 
-app.get('/cadastro', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastroCliente.html'));
+// Rota protegida que requer autenticação
+app.get('/usuario', verificaAutenticacao, (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'pages', 'usuario.html'));
 });
 
-app.get('/imoveis', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src', 'pages', 'lista.html'));
+app.get('/cadastro', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastroCliente.html'));
 });
 
 // Configuração do multer para lidar com o upload de arquivos
@@ -76,7 +98,6 @@ app.post('/api/imoveis/fotos', upload.array('fotos'), async (req, res) => {
   }
 });
 
-// Inicie o servidor
 const server = app.listen(PORT, () => {
   console.log(`Servidor iniciado na porta ${PORT}`);
 });

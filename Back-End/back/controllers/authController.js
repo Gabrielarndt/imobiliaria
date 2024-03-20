@@ -58,12 +58,13 @@ async function loginUser(req, res) {
 
 async function logoutUser(req, res) {
     try {
-        // Implemente a lógica de logout aqui, se necessário
+        res.clearCookie('token');
         return res.status(200).json({ message: 'Logout efetuado com sucesso' });
     } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        console.error('Erro:', error);
+        res.status(500).json({ message: 'Erro interno do servidor' });
     }
 }
 
 module.exports = { registerUser, loginUser, logoutUser };
+

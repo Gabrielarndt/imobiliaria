@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página do Usuário</title>
+</head>
+<body>
+    <% if (usuarioAutenticado) { %>
+        <h1>Bem-vindo, <%= usuario.nome %>!</h1>
+        <p>Seus detalhes:</p>
+        <ul>
+            <li><strong>Email:</strong> <%= usuario.email %></li>
+            <!-- Adicione mais informações do usuário conforme necessário -->
+        </ul>
+        <form action="/api/auth/logout" method="post">
+            <button type="submit">Logout</button>
+        </form>
+    <% } else { %>
+        <h1>Você não está autenticado</h1>
+        <p>Por favor, faça login para acessar esta página.</p>
+        <a href="/login">Login</a>
+    <% } %>
+</body>
+</html>

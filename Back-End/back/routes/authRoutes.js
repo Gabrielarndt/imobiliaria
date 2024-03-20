@@ -13,4 +13,10 @@ router.get('/profile', authenticateJWT, (req, res) => {
     res.json({ user: req.user });
 });
 
+router.get('/recurso-protegido', authenticateJWT, (req, res) => {
+    // Se chegou até aqui, o usuário está autenticado
+    // O objeto req.user contém os detalhes do usuário autenticado
+    res.send('Você está autenticado!');
+});
+
 module.exports = router;
