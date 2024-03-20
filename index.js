@@ -6,6 +6,9 @@ const authRouter = require('./Back-End/back/routes/authRoutes'); // Importe as s
 const imoveisRouter = require('./Back-End/back/routes/imoveis');
 const bodyParser = require('body-parser');
 const authController = require('./Back-End/back/controllers/authController'); // Importe o controlador de autenticação
+const User = require('./Back-End/back/models/User');
+const { verificaToken } = require('./Back-End/back/middleware/authMiddleware');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Define a porta do servidor
@@ -14,25 +17,6 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'src')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Middleware para verificar autenticação
-function verificaAutenticacao(req, res, next) {
-  // Extrai o token do cabeçalho Authorization
-  const token = req.headers.authorization;
-  
-  if (!token) {
-    return res.status(401).json({ message: 'Token de autenticação não fornecido' });
-  }
-
-  try {
-    // Verifica se o token é válido
-    const decoded = jwt.verify(token, 'seu_segredo');
-    req.user = decoded.user;
-    next();
-  } catch (error) {
-    return res.status(401).json({ message: 'Token de autenticação inválido' });
-  }
-}
 
 // Rotas de autenticação
 app.use('/api/imoveis', imoveisRouter);
@@ -58,12 +42,15 @@ app.get('/cadastro', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastroCliente.html'));
 });
 
-app.get('/login', (req, res) => {
+app.get('/login', verificaToken, (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'login.html'));
+  res.send('Você está autenticado');
 });
 
+const novoToken = jwt.sign({ userId: usuario.id }, 'seu_segredo', { expiresIn: '1h' });
+
 // Rota protegida que requer autenticação
-app.get('/usuario', verificarToken, async (req, res) => {
+app.get('/usuario', verificaToken, async (req, res) => {
   try {
     // Se o token for válido, retorne os detalhes do usuário
     const usuario = await obterDetalhesUsuario(req.userId); // Supondo que você tenha uma função para obter os detalhes do usuário
@@ -73,8 +60,6 @@ app.get('/usuario', verificarToken, async (req, res) => {
     res.status(500).json({ message: 'Erro ao obter detalhes do usuário' });
   }
 });
-
-const User = require('./models/User');
 
 async function obterDetalhesUsuario(userId) {
   try {
@@ -90,28 +75,6 @@ async function obterDetalhesUsuario(userId) {
     throw error;
   }
 }
-
-function verificarToken(req, res, next) {
-  const token = req.headers.authorization;
-
-  if (!token) {
-    return res.status(401).json({ message: 'Token de autenticação não fornecido' });
-  }
-  try {
-    // Supondo que você tenha uma chave secreta para verificar o token
-    const chaveSecreta = 'seu_segredo';
-    const decodedToken = jwt.verify(token, chaveSecreta);
-    // Se o token for válido, defina req.userId com o ID do usuário extraído do token
-    req.userId = decodedToken.userId;
-    // Chame next() para passar para o próximo middleware ou rota
-    next();
-  } catch (error) {
-    // Se ocorrer um erro ao verificar o token, retorne uma resposta de erro 401
-    return res.status(401).json({ message: 'Token de autenticação inválido' });
-  }
-}
-
-
 
 // Configuração do multer para lidar com o upload de arquivos
 const storage = multer.diskStorage({

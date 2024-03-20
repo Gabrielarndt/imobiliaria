@@ -1,3 +1,5 @@
+localStorage.setItem('token', seuToken);
+
 document.getElementById('loginForm').addEventListener('submit', async (event) => {
     event.preventDefault(); // Impede o comportamento padrão de envio do formulário
 

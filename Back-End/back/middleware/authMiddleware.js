@@ -15,4 +15,20 @@ function authenticateJWT(req, res, next) {
     })(req, res, next);
 }
 
-module.exports = { authenticateJWT };
+const jwt = require('jsonwebtoken');
+
+function verificaToken(req, res, next) {
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(401).json({ message: 'Token de autenticação não fornecido' });
+  }
+  try {
+    const decoded = jwt.verify(token, 'seu_segredo');
+    req.user = decoded.user;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Token inválido' });
+  }
+}
+
+module.exports = { authenticateJWT, verificaToken };
