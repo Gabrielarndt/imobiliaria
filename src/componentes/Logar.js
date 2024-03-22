@@ -1,3 +1,5 @@
+//logar.js
+
 document.getElementById('loginForm').addEventListener('submit', async (event) => {
     event.preventDefault(); // Impede o comportamento padrão de envio do formulário
 
@@ -14,15 +16,10 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
         });
 
         if (response.ok) {
-            // Extrair o token da resposta
-            const data = await response.json();
-            const token = data.token;
-            console.log('Token recebido:', token);
+            // O token será enviado automaticamente pelo navegador como um cookie
+            // Não é mais necessário armazenar o token no localStorage
 
-            // Armazenar o token no localStorage ou em outro lugar, conforme necessário
-            localStorage.setItem('token', token);
-
-            // Redirecionar para outra página ou realizar outras ações, conforme necessário
+            // Redirecionar para a página do usuário
             window.location.href = '/usuario';
         } else if (response.status === 401) {
             // Exibir alerta de credenciais incorretas

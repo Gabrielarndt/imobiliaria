@@ -20,45 +20,41 @@
         <form action="/api/auth/logout" method="post">
             <button type="submit">Logout</button>
         </form>
-    <% } else { %>
-        <h1>Você não está autenticado</h1>
-        <p>Por favor, faça login para acessar esta página.</p>
-        <a href="/login">Login</a>
-    <% } %>
+        <% } else { %>
+            <h1>Você não está autenticado</h1>
+            <p>Por favor, faça login para acessar esta página.</p>
+            <a href="/login">Login</a>
+            <% } %>
 
-    <script>
-        async function getUserDetails() {
-            try {
-                const response = await fetch('/usuario', {
-                    headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('token')
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error('Erro ao obter detalhes do usuário');
-                }
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                throw error;
-            }
-        }
+                <script src="../componentes/usuario.js"></script>
+                <script>
+                    console.log('Token recuperado:', localStorage.getItem('token'));
 
-        async function displayUserDetails() {
-            try {
-                const userDetails = await getUserDetails();
-                // Atualiza o DOM com os detalhes do usuário
-                document.getElementById('nomeUsuario').textContent = userDetails.username;
-                document.getElementById('emailUsuario').textContent = userDetails.email;
-            } catch (error) {
-                console.error('Erro ao exibir detalhes do usuário:', error);
-            }
-        }
+                    // Enviar solicitação para a rota /usuario com o token no cabeçalho Authorization
+                    fetch('/usuario', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`, // Adicione o token ao cabeçalho Authorization
+                            'Content-Type': 'application/json'
+                        },
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                // Se a resposta estiver OK, continue com o processamento
+                                return response.json();
+                            } else {
+                                throw new Error('Erro ao acessar rota /usuario');
+                            }
+                        })
+                        .then(data => {
+                            // Manipular os dados recebidos, se necessário
+                            console.log('Dados recebidos:', data);
+                        })
+                        .catch(error => {
+                            console.error('Erro:', error);
+                        });
 
-        window.addEventListener('DOMContentLoaded', () => {
-            displayUserDetails();
-        });
-    </script>
+                </script>
 </body>
 
 </html>

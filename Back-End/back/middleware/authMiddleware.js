@@ -1,34 +1,47 @@
 // middleware/authMiddleware.js
 
-const passport = require('passport');
-
-function authenticateJWT(req, res, next) {
-    passport.authenticate('jwt', { session: false }, (err, user, info) => {
-        if (err) {
-            return res.status(500).json({ message: err.message });
-        }
-        if (!user) {
-            return res.status(401).json({ message: info.message });
-        }
-        req.user = user;
-        next();
-    })(req, res, next);
-}
-
 const jwt = require('jsonwebtoken');
 
-function verificaToken(req, res, next) {
-  const token = req.headers.authorization;
-  if (!token) {
-    return res.status(401).json({ message: 'Token de autenticação não fornecido' });
-  }
-  try {
-    const decoded = jwt.verify(token, 'seu_segredo');
-    req.user = decoded.user;
-    next();
-  } catch (error) {
-    return res.status(401).json({ message: 'Token inválido' });
-  }
+function verificarTokenEObterDetalhesUsuario(req, res, next) {
+    const token = req.cookies.token; // Supondo que o token seja enviado como um cookie chamado 'token'
+
+    if (!token) {
+        return res.status(401).json({ message: 'Token de autenticação não fornecido' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, 'seu_segredo');
+        req.user = decoded;
+        next();
+    } catch (error) {
+        console.error('Erro ao verificar o token:', error);
+        return res.status(401).json({ message: 'Token inválido' });
+    }
 }
 
-module.exports = { authenticateJWT, verificaToken };
+function authenticateJWT(req, res, next) {
+    // Verifique se o token está presente no cabeçalho Authorization
+    
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        return res.status(401).json({ message: 'Token de autenticação não fornecido' });
+    }
+
+    // O token está no formato "Bearer <token>". Separe o token da palavra "Bearer"
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ message: 'Token de autenticação não fornecido corretamente' });
+    }
+
+    try {
+        // Verifique e decodifique o token usando a chave secreta
+        const decoded = jwt.verify(token, 'seu_segredo');
+        req.user = decoded; // Adicione o payload do token decodificado ao objeto de solicitação (req.user)
+        next(); // Prossiga para a próxima middleware ou rota
+    } catch (error) {
+        console.error('Erro ao verificar o token:', error);
+        return res.status(401).json({ message: 'Token inválido' });
+    }
+}
+
+module.exports = { authenticateJWT, verificarTokenEObterDetalhesUsuario };

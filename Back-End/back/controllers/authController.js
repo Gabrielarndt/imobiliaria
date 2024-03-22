@@ -48,12 +48,20 @@ async function loginUser(req, res) {
         }
 
         const token = jwt.sign({ id: user.id }, 'seu_segredo', { expiresIn: '1h' });
+
+        // Armazene o token JWT no banco de dados associado ao usuário
+        // user.token = token;
+        // await user.save();
+
+        res.cookie('token', token, { httpOnly: true });
+        
         res.status(200).json({ token });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
 
 
 async function logoutUser(req, res) {

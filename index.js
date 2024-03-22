@@ -1,3 +1,5 @@
+//index.js
+
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -8,10 +10,14 @@ const bodyParser = require('body-parser');
 const authController = require('./Back-End/back/controllers/authController'); // Importe o controlador de autenticação
 const User = require('./Back-End/back/models/User');
 const passport = require('./Back-End/back/passport');
+// const { authenticateJWT } = require('./Back-End/back/middleware/authMiddleware');
+const { verificarTokenEObterDetalhesUsuario } = require('./Back-End/back/middleware/authMiddleware')
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Define a porta do servidor
 app.use(passport.initialize());
+app.use(cookieParser());
 
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'src')));
@@ -47,14 +53,15 @@ app.get('/login', (req, res) => {
 });
 
 // Rota protegida que requer autenticação
-app.get('/usuario', passport.authenticate('jwt', { session: false }), async (req, res) => {
-  try {
-    const usuario = await obterDetalhesUsuario(req.user._id);
-    res.json(usuario);
-  } catch (error) {
-    console.error('Erro ao obter detalhes do usuário:', error);
-    res.status(500).json({ message: 'Erro ao obter detalhes do usuário' });
-  }
+app.get('/usuario',verificarTokenEObterDetalhesUsuario, (req, res) => {
+  // try {
+  //   const usuario = await obterDetalhesUsuario(req.user.id); // Use req.user.id para obter o ID do usuário
+  //   res.json(usuario);
+  // } catch (error) {
+  //   console.error('Erro ao obter detalhes do usuário:', error);
+  //   res.status(500).json({ message: 'Erro ao obter detalhes do usuário' });
+  // }
+  res.send('Você acessou o recurso protegido!');
 });
 
 
