@@ -13,6 +13,7 @@ const passport = require('./Back-End/back/passport');
 // const { authenticateJWT } = require('./Back-End/back/middleware/authMiddleware');
 const { verificarTokenEObterDetalhesUsuario } = require('./Back-End/back/middleware/authMiddleware')
 const cookieParser = require('cookie-parser');
+const usuarioRouter = require ('./src/componentes/usuario')
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Define a porta do servidor
@@ -25,11 +26,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Rotas de autenticação
+app.use('/api', usuarioRouter);
 app.use('/api/imoveis', imoveisRouter);
 app.use('/api/auth', authRouter); // Use o authRouter para lidar com rotas de autenticação
 app.post('/api/auth/login', authController.loginUser); // Rota para login de usuários
 app.post('/api/auth/register', authController.registerUser); // Rota para registro de usuários
 app.post('/api/auth/logout', authController.logoutUser); // Rota para logout de usuários
+
 
 // Rotas para servir páginas HTML
 app.get('/', (req, res) => {
@@ -54,31 +57,9 @@ app.get('/login', (req, res) => {
 
 // Rota protegida que requer autenticação
 app.get('/usuario',verificarTokenEObterDetalhesUsuario, (req, res) => {
-  // try {
-  //   const usuario = await obterDetalhesUsuario(req.user.id); // Use req.user.id para obter o ID do usuário
-  //   res.json(usuario);
-  // } catch (error) {
-  //   console.error('Erro ao obter detalhes do usuário:', error);
-  //   res.status(500).json({ message: 'Erro ao obter detalhes do usuário' });
-  // }
-  res.send('Você acessou o recurso protegido!');
+  res.sendFile(path.join(__dirname, 'src', 'pages', 'usuario.html'));
 });
 
-
-async function obterDetalhesUsuario(userId) {
-  try {
-    // Consulta o banco de dados para obter o usuário com o ID fornecido
-    const usuario = await User.findById(userId);
-    if (!usuario) {
-      throw new Error('Usuário não encontrado');
-    }
-    // Retorna os detalhes do usuário
-    return usuario;
-  } catch (error) {
-    console.error('Erro ao obter detalhes do usuário:', error);
-    throw error;
-  }
-}
 
 // Configuração do multer para lidar com o upload de arquivos
 const storage = multer.diskStorage({

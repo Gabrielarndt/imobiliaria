@@ -47,15 +47,14 @@ async function loginUser(req, res) {
             return res.status(401).json({ message: 'Email ou senha incorreto' });
         }
 
-        const token = jwt.sign({ id: user.id }, 'seu_segredo', { expiresIn: '1h' });
-
-        // Armazene o token JWT no banco de dados associado ao usuário
-        // user.token = token;
-        // await user.save();
+        const token = jwt.sign({ id: user.id, email: user.email, name: user.username }, 'seu_segredo', { expiresIn: '1h' });
+        console.log('ID do usuário recuperado:', user.id);
 
         res.cookie('token', token, { httpOnly: true });
+
+        res.cookie('userId', user.id);
         
-        res.status(200).json({ token });
+        res.status(200).json({ token, user });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ message: 'Internal server error' });
