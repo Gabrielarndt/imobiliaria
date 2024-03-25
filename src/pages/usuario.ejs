@@ -1,5 +1,3 @@
-<!-- usuario.ejs -->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,22 +5,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página do Usuário</title>
+    <!-- Adicione os links para o Bootstrap CSS aqui -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Adicione seu CSS personalizado aqui -->
+    <link rel="stylesheet" href="../styles/styleUsuario.css">
 </head>
 
 <body>
 
-    <h1>Bem-vindo, <span id="nomeUsuario"></span>!</h1>
-    <p>Seus detalhes:</p>
-    <ul>
-        <li><strong>Email:</strong> <span id="emailUsuario"></span></li>
-        <!-- Adicione outros detalhes do usuário aqui, conforme necessário -->
-    </ul>
-    <form action="/api/auth/logout" method="post">
-        <button type="submit">Logout</button>
-    </form>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1 class="text-center mb-4">Bem-vindo, <span id="nomeUsuario"></span>!</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Seus detalhes:</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Email:</strong> <span id="emailUsuario"></span></li>
+                            <li class="list-group-item"><strong>Phone:</strong> <span id="phoneUsuario"></span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+
+                    <form action="/api/auth/logout" method="post" class="mt-4">
+                        <button type="submit" class="btn btn-primary">Logout</button>
+                    </form>
+                    <form action="" class="mt-4">
+                        <button type="submit" class="btn btn-primary">Alterar senha</button>
+                    </form>
+                    <form action="" class="mt-4">
+                        <button type="submit" class="btn btn-primary">Editar informações</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="../componentes/usuario.js"></script>
-
 </body>
 
 </html>

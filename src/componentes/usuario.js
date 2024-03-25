@@ -29,12 +29,12 @@ async function carregarInformacoesUsuario() {
 
         // Extrair as informações do usuário da resposta
         const data = await response.json();
-        const { nome, email } = data;
+        const { username, email, phone, createdAt } = data;
 
-        // Preencher os elementos HTML com as informações do usuário
-        document.getElementById('nomeUsuario').textContent = nome;
+        document.getElementById('nomeUsuario').textContent = username;
         document.getElementById('emailUsuario').textContent = email;
-        // Adicione aqui outras informações do usuário, conforme necessário
+        document.getElementById('phoneUsuario').textContent = phone;
+        document.getElementById('criado').textContent = createdAt;
     } catch (error) {
         console.error('Erro ao carregar informações do usuário:', error);
     }
