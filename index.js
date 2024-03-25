@@ -10,7 +10,6 @@ const bodyParser = require('body-parser');
 const authController = require('./Back-End/back/controllers/authController'); // Importe o controlador de autenticação
 const User = require('./Back-End/back/models/User');
 const passport = require('./Back-End/back/passport');
-// const { authenticateJWT } = require('./Back-End/back/middleware/authMiddleware');
 const { verificarTokenEObterDetalhesUsuario } = require('./Back-End/back/middleware/authMiddleware')
 const cookieParser = require('cookie-parser');
 const usuarioRouter = require ('./Back-End/back/routes/userRoutes')

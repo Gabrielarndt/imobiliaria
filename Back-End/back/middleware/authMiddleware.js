@@ -6,7 +6,8 @@ function verificarTokenEObterDetalhesUsuario(req, res, next) {
     const token = req.cookies.token; // Supondo que o token seja enviado como um cookie chamado 'token'
 
     if (!token) {
-        return res.status(401).json({ message: 'Token de autenticação não fornecido' });
+        console.log("Token de autenticação não fornecido");
+        return res.redirect('/login');
     }
 
     try {
@@ -14,10 +15,11 @@ function verificarTokenEObterDetalhesUsuario(req, res, next) {
         req.user = decoded;
         next();
     } catch (error) {
-        console.error('Erro ao verificar o token:', error);
-        return res.status(401).json({ message: 'Token inválido' });
+        console.error('Erro ao verificar o token (Token inválido):', error);
+        return res.redirect('/login');
     }
 }
+
 
 function authenticateJWT(req, res, next) {
     // Verifique se o token está presente no cabeçalho Authorization
