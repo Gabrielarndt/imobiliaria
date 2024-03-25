@@ -13,7 +13,7 @@ const User = require('./Back-End/back/models/User');
 const passport = require('./Back-End/back/passport');
 const { verificarTokenEObterDetalhesUsuario } = require('./Back-End/back/middleware/authMiddleware')
 const cookieParser = require('cookie-parser');
-const usuarioRouter = require ('./Back-End/back/routes/userRoutes')
+const usuarioRouter = require('./Back-End/back/routes/userRoutes')
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Define a porta do servidor
@@ -60,26 +60,26 @@ app.get('/login', (req, res) => {
 });
 
 // Rota protegida que requer autenticação
-app.get('/usuario',verificarTokenEObterDetalhesUsuario, (req, res) => {
+app.get('/usuario', verificarTokenEObterDetalhesUsuario, (req, res) => {
   res.render('usuario');
 });
 
 app.get('/api/usuario/:userId', async (req, res) => {
   try {
-      // Recuperar o ID do usuário a partir dos parâmetros da URL
-      const userId = req.params.userId;
+    // Recuperar o ID do usuário a partir dos parâmetros da URL
+    const userId = req.params.userId;
 
-      // Buscar as informações do usuário com base no ID
-      const user = await User.findByPk(userId);
-      if (!user) {
-          return res.status(404).json({ message: 'Usuário não encontrado' });
-      }
+    // Buscar as informações do usuário com base no ID
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
 
-      // Retornar as informações do usuário como JSON
-      res.json(user);
+    // Retornar as informações do usuário como JSON
+    res.json(user);
   } catch (error) {
-      console.error('Erro ao buscar informações do usuário:', error);
-      res.status(500).json({ message: 'Erro interno do servidor' });
+    console.error('Erro ao buscar informações do usuário:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
   }
 });
 
@@ -91,7 +91,54 @@ app.get('/editaUser', (req, res) => {
 app.post('/api/editarUsuario', async (req, res) => {
   try {
     const userId = req.cookies.userId // Obtém o ID do usuário autenticado
-      const { username, phone, password } = req.body; // Obtém os novos dados do usuário a serem atualizados
+    const { username, phone, password } = req.body; // Obtém os novos dados do usuário a serem atualizados
+
+    // Verifica se o usuário existe no banco de dados
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
+
+    // Verifica se a senha fornecida pelo usuário está correta
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Senha incorreta. Não é possível atualizar as informações do usuário.' });
+    }
+
+    // Verifica se o novo nome de usuário já está em uso por outro usuário
+    const existingUsername = await User.findOne({ where: { username } });
+    if (existingUsername && existingUsername.id !== req.cookies.userId) {
+      return res.status(400).json({ message: 'Nome de usuário já em uso. Escolha outro.' });
+    }
+
+    // Verifica se o novo número de telefone já está em uso por outro usuário
+    const existingPhone = await User.findOne({ where: { phone } });
+    if (existingPhone && existingPhone.id !== req.cookies.userId) {
+      return res.status(400).json({ message: 'Número de telefone já em uso. Escolha outro.' });
+    }
+
+    // Atualiza as informações do usuário no banco de dados
+    user.username = username;
+    user.phone = phone;
+    await user.save();
+
+    // Retorna uma resposta de sucesso
+    return res.status(200).json({ message: 'Informações do usuário atualizadas com sucesso!', user });
+  } catch (error) {
+    console.error('Erro ao atualizar informações do usuário:', error);
+    return res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+});
+
+app.get('/editaSenha', (req, res) => {
+  res.render('editaSenha');
+});
+
+// Rota para processar a solicitação de atualização de senha
+app.post('/api/editarSenha', async (req, res) => {
+  try {
+      const userId = req.cookies.userId; // Obtém o ID do usuário autenticado
+      const { oldPassword, newPassword } = req.body; // Obtém as senhas antiga e nova
 
       // Verifica se o usuário existe no banco de dados
       const user = await User.findByPk(userId);
@@ -99,36 +146,24 @@ app.post('/api/editarUsuario', async (req, res) => {
           return res.status(404).json({ message: 'Usuário não encontrado' });
       }
 
-      // Verifica se a senha fornecida pelo usuário está correta
-      const passwordMatch = await bcrypt.compare(password, user.password);
+      // Verifica se a senha antiga está correta
+      const passwordMatch = await bcrypt.compare(oldPassword, user.password);
       if (!passwordMatch) {
-          return res.status(401).json({ message: 'Senha incorreta. Não é possível atualizar as informações do usuário.' });
+          return res.status(401).json({ message: 'Senha antiga incorreta. Não é possível atualizar a senha.' });
       }
 
-      // Verifica se o novo nome de usuário já está em uso por outro usuário
-      const existingUsername = await User.findOne({ where: { username } });
-      if (existingUsername && existingUsername.id !== req.user.id) {
-          return res.status(400).json({ message: 'Nome de usuário já em uso. Escolha outro.' });
-      }
-
-      // Verifica se o novo número de telefone já está em uso por outro usuário
-      const existingPhone = await User.findOne({ where: { phone } });
-      if (existingPhone && existingPhone.id !== req.user.id) {
-          return res.status(400).json({ message: 'Número de telefone já em uso. Escolha outro.' });
-      }
-
-      // Atualiza as informações do usuário no banco de dados
-      user.username = username;
-      user.phone = phone;
+      // Atualiza a senha do usuário
+      user.password = newPassword;
       await user.save();
 
       // Retorna uma resposta de sucesso
-      return res.status(200).json({ message: 'Informações do usuário atualizadas com sucesso!', user });
+      return res.status(200).json({ message: 'Senha atualizada com sucesso!' });
   } catch (error) {
-      console.error('Erro ao atualizar informações do usuário:', error);
+      console.error('Erro ao atualizar a senha:', error);
       return res.status(500).json({ message: 'Erro interno do servidor' });
   }
 });
+
 
 // Configuração do multer para lidar com o upload de arquivos
 const storage = multer.diskStorage({

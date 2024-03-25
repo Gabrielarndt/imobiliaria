@@ -3,7 +3,7 @@ document.getElementById('editarForm').addEventListener('submit', async (event) =
 
     const username = document.getElementById('username').value;
     const phone = document.getElementById('phone').value;
-    const password = document.getElementById('password').value; 
+    const password = document.getElementById('password').value;
 
     try {
         const response = await fetch('/api/editarUsuario', {
@@ -11,7 +11,7 @@ document.getElementById('editarForm').addEventListener('submit', async (event) =
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ username, phone, password }) // Inclua a senha no corpo da requisição
+            body: JSON.stringify({ username, phone, password })
         });
 
         const data = await response.json();
@@ -20,8 +20,8 @@ document.getElementById('editarForm').addEventListener('submit', async (event) =
             // Se a atualização for bem-sucedida, redirecione para a página do usuário
             window.location.href = '/usuario';
         } else {
-            // Se ocorrer um erro, exiba um alerta com a mensagem de erro recebida do servidor
-            alert(data.error);
+            // Se ocorrer um erro, exiba a mensagem de erro recebida do servidor
+            alert(data.message); // Aqui estamos usando data.message para exibir a mensagem de erro
         }
     } catch (error) {
         console.error('Erro ao atualizar informações do usuário:', error);
