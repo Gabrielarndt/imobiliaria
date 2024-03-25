@@ -13,10 +13,11 @@ const passport = require('./Back-End/back/passport');
 // const { authenticateJWT } = require('./Back-End/back/middleware/authMiddleware');
 const { verificarTokenEObterDetalhesUsuario } = require('./Back-End/back/middleware/authMiddleware')
 const cookieParser = require('cookie-parser');
-const usuarioRouter = require ('./src/componentes/usuario')
+const usuarioRouter = require ('./Back-End/back/routes/userRoutes')
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Define a porta do servidor
+
 app.use(passport.initialize());
 app.use(cookieParser());
 
@@ -24,6 +25,9 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'src')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'src', 'pages'));
 
 // Rotas de autenticação
 app.use('/api', usuarioRouter);
@@ -57,8 +61,28 @@ app.get('/login', (req, res) => {
 
 // Rota protegida que requer autenticação
 app.get('/usuario',verificarTokenEObterDetalhesUsuario, (req, res) => {
-  res.sendFile(path.join(__dirname, 'src', 'pages', 'usuario.html'));
+  res.render('usuario');
 });
+
+app.get('/api/usuario/:userId', async (req, res) => {
+  try {
+      // Recuperar o ID do usuário a partir dos parâmetros da URL
+      const userId = req.params.userId;
+
+      // Buscar as informações do usuário com base no ID
+      const user = await User.findByPk(userId);
+      if (!user) {
+          return res.status(404).json({ message: 'Usuário não encontrado' });
+      }
+
+      // Retornar as informações do usuário como JSON
+      res.json(user);
+  } catch (error) {
+      console.error('Erro ao buscar informações do usuário:', error);
+      res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+});
+
 
 
 // Configuração do multer para lidar com o upload de arquivos

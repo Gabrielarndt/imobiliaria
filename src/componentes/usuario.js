@@ -1,109 +1,44 @@
-// // Função para obter o token JWT do localStorage
-// const getToken = () => {
-//   return localStorage.getItem('token');
-// };
+ // Função para obter o valor de um cookie por nome
+ function getCookie(name) {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [cookieName, cookieValue] = cookie.trim().split('=');
+        if (cookieName === name) {
+            return cookieValue;
+        }
+    }
+    return null;
+}
 
-// // Função para fazer solicitações à rota protegida '/usuario' com o token JWT
-// const getUserDetails = async () => {
-//   try {
-//       const token = getToken();
-//       if (!token) {
-//           throw new Error('Token de autenticação não encontrado');
-//       }
-
-//       const response = await fetch('/usuario', {
-//           method: 'GET',
-//           headers: {
-//               'Authorization': `Bearer ${token}`, // Adicione o token ao cabeçalho Authorization
-//           },
-//       });
-
-//       if (!response.ok) {
-//           throw new Error('Erro ao obter detalhes do usuário');
-//       }
-
-//       const data = await response.json();
-//       return data;
-//   } catch (error) {
-//       console.error('Erro ao obter detalhes do usuário:', error);
-//       throw error;
-//   }
-// };
-
-// // Função para exibir detalhes do usuário na página
-// const displayUserDetails = async () => {
-//   try {
-//       const userDetails = await getUserDetails();
-//       // Atualiza o DOM com os detalhes do usuário
-//       document.getElementById('nomeUsuario').textContent = userDetails.username;
-//       document.getElementById('emailUsuario').textContent = userDetails.email;
-//   } catch (error) {
-//       console.error('Erro ao exibir detalhes do usuário:', error);
-//   }
-// };
-
-// // Adicione um event listener para atualizar os detalhes do usuário quando a página é carregada
-// window.addEventListener('DOMContentLoaded', () => {
-//   displayUserDetails();
-// });
-
-// // Event listener para fazer logout
-// document.getElementById('logoutButton').addEventListener('click', async () => {
-//   try {
-//       const token = getToken();
-//       if (!token) {
-//           throw new Error('Token de autenticação não encontrado');
-//       }
-
-//       const response = await fetch('/api/auth/logout', {
-//           method: 'POST',
-//           headers: {
-//               'Authorization': `Bearer ${token}`, // Adicione o token ao cabeçalho Authorization
-//           },
-//       });
-
-//       if (!response.ok) {
-//           throw new Error('Erro ao fazer logout');
-//       }
-
-//       // Limpe o token do localStorage
-//       localStorage.removeItem('token');
-
-//       // Redirecione para a página de login
-//       window.location.href = '/login';
-//   } catch (error) {
-//       console.error('Erro ao fazer logout:', error);
-//   }
-// });
-
-// Função para fazer login
-const express = require('express');
-const router = express.Router();
-const { User } = require('../../Back-End/back/models/User');
-
-
-// Rota para obter as informações do usuário com base no ID
-router.get('/api/usuario/:userId', async (req, res) => {
-      try {
-        // Recuperar o ID do usuário a partir dos parâmetros da URL
-        const userId = req.params.userId;
-
-        // Buscar as informações do usuário com base no ID
-        const user = await User.findByPk(userId);
-        if (!user) {
-            // Se o usuário não for encontrado, retornar um erro 404
-            return res.status(404).json({ message: 'Usuário não encontrado' });
+// Função para carregar as informações do usuário
+async function carregarInformacoesUsuario() {
+    try {
+        // Recuperar o ID do usuário do cookie
+        const userId = getCookie('userId');
+        if (!userId) {
+            console.error('ID do usuário não encontrado no cookie');
+            return;
         }
 
-        // Retornar as informações do usuário como JSON
-        res.json({ nome: user.nome, email: user.email });
+        // Fazer uma solicitação para obter as informações do usuário com base no ID
+        const response = await fetch(`/api/usuario/${userId}`);
+        if (!response.ok) {
+            console.error('Erro ao obter informações do usuário:', response.statusText);
+            return;
+        }
+
+        // Extrair as informações do usuário da resposta
+        const data = await response.json();
+        const { nome, email } = data;
+
+        // Preencher os elementos HTML com as informações do usuário
+        document.getElementById('nomeUsuario').textContent = nome;
+        document.getElementById('emailUsuario').textContent = email;
+        // Adicione aqui outras informações do usuário, conforme necessário
     } catch (error) {
-        // Se ocorrer um erro, retornar um erro 500
-        console.error('Erro ao buscar informações do usuário:', error);
-        res.status(500).json({ message: 'Erro interno do servidor' });
+        console.error('Erro ao carregar informações do usuário:', error);
     }
-});
+}
 
-module.exports = router;
-
-
+// Chamar a função para carregar as informações do usuário quando a página for carregada
+window.onload = carregarInformacoesUsuario;

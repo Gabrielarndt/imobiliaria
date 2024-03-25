@@ -1,0 +1,28 @@
+<!-- usuario.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página do Usuário</title>
+</head>
+
+<body>
+
+    <h1>Bem-vindo, <span id="nomeUsuario"></span>!</h1>
+    <p>Seus detalhes:</p>
+    <ul>
+        <li><strong>Email:</strong> <span id="emailUsuario"></span></li>
+        <!-- Adicione outros detalhes do usuário aqui, conforme necessário -->
+    </ul>
+    <form action="/api/auth/logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
+
+    <script src="../componentes/usuario.js"></script>
+
+</body>
+
+</html>
