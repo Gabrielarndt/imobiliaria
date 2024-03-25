@@ -73,5 +73,43 @@ async function logoutUser(req, res) {
     }
 }
 
-module.exports = { registerUser, loginUser, logoutUser };
+async function updateUser(req, res) {
+    try {
+        const userId = req.user.id; // Obtém o ID do usuário autenticado
+        const { username, phone, password } = req.body; // Obtém os novos dados do usuário a serem atualizados
+
+        // Verifica a senha fornecida pelo usuário
+        const user = await User.findByPk(userId);
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) {
+            return res.status(401).json({ message: 'Senha incorreta. As informações do usuário não foram atualizadas.' });
+        }
+
+        // Verifica se o novo username já está em uso por outro usuário
+        const existingUsername = await User.findOne({ where: { username } });
+        if (existingUsername && existingUsername.id !== req.user.id) {
+            return res.status(400).json({ message: 'Nome de usuário já em uso. Escolha outro.' });
+        }
+
+        // Verifica se o novo número de telefone já está em uso por outro usuário
+        const existingPhone = await User.findOne({ where: { phone } });
+        if (existingPhone && existingPhone.id !== req.user.id) {
+            return res.status(400).json({ message: 'Número de telefone já em uso. Escolha outro.' });
+        }
+        
+        // Atualiza as informações do usuário no banco de dados
+        user.username = username;
+        user.phone = phone;
+        await user.save();
+        
+        return res.status(200).json({ message: 'Informações do usuário atualizadas com sucesso!', user });
+    } catch (error) {
+        console.error('Erro ao atualizar informações do usuário:', error);
+        return res.status(500).json({ message: 'Erro interno do servidor' });
+    }
+}
+
+
+
+module.exports = { registerUser, loginUser, logoutUser, updateUser };
 

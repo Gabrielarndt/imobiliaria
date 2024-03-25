@@ -3,6 +3,7 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const bcrypt = require('bcrypt');
 const multer = require('multer');
 const authRouter = require('./Back-End/back/routes/authRoutes'); // Importe as suas rotas de autenticação
 const imoveisRouter = require('./Back-End/back/routes/imoveis');
@@ -82,7 +83,52 @@ app.get('/api/usuario/:userId', async (req, res) => {
   }
 });
 
+app.get('/editaUser', (req, res) => {
+  res.render('editaUser'); // Renderiza a página de edição de informações
+});
 
+// Rota para editar informações do usuário
+app.post('/api/editarUsuario', async (req, res) => {
+  try {
+    const userId = req.cookies.userId // Obtém o ID do usuário autenticado
+      const { username, phone, password } = req.body; // Obtém os novos dados do usuário a serem atualizados
+
+      // Verifica se o usuário existe no banco de dados
+      const user = await User.findByPk(userId);
+      if (!user) {
+          return res.status(404).json({ message: 'Usuário não encontrado' });
+      }
+
+      // Verifica se a senha fornecida pelo usuário está correta
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if (!passwordMatch) {
+          return res.status(401).json({ message: 'Senha incorreta. Não é possível atualizar as informações do usuário.' });
+      }
+
+      // Verifica se o novo nome de usuário já está em uso por outro usuário
+      const existingUsername = await User.findOne({ where: { username } });
+      if (existingUsername && existingUsername.id !== req.user.id) {
+          return res.status(400).json({ message: 'Nome de usuário já em uso. Escolha outro.' });
+      }
+
+      // Verifica se o novo número de telefone já está em uso por outro usuário
+      const existingPhone = await User.findOne({ where: { phone } });
+      if (existingPhone && existingPhone.id !== req.user.id) {
+          return res.status(400).json({ message: 'Número de telefone já em uso. Escolha outro.' });
+      }
+
+      // Atualiza as informações do usuário no banco de dados
+      user.username = username;
+      user.phone = phone;
+      await user.save();
+
+      // Retorna uma resposta de sucesso
+      return res.status(200).json({ message: 'Informações do usuário atualizadas com sucesso!', user });
+  } catch (error) {
+      console.error('Erro ao atualizar informações do usuário:', error);
+      return res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+});
 
 // Configuração do multer para lidar com o upload de arquivos
 const storage = multer.diskStorage({

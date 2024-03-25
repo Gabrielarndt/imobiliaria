@@ -8,9 +8,11 @@ router.post('/cadastrar', authController.registerUser);
 router.post('/login', authController.loginUser);
 
 router.get('/usuario', authenticateJWT, (req, res) => {
-    // Aqui você pode acessar o usuário autenticado através de req.user
     res.json({ user: req.user });
 });
+
+router.put('/usuario', authenticateJWT, authController.updateUser);
+
 
 module.exports = router;
 

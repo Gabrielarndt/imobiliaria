@@ -1,0 +1,32 @@
+<!-- editaUser.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Informações do Usuário</title>
+</head>
+
+<body>
+    <h1>Editar Informações do Usuário</h1>
+    <!-- Formulário para editar informações do usuário -->
+    <form id="editarForm" action="/api/editarUsuario" method="POST">
+        <!-- Campos para editar informações do usuário -->
+        <label for="password">Senha:</label>
+        <input type="password" id="password" name="password" >
+        <br>
+        <label for="username">Nome de Usuário:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+        <label for="phone">Telefone:</label>
+        <input type="text" id="phone" name="phone" required>
+        <br>
+        <!-- Botão para enviar o formulário -->
+        <button type="submit">Salvar Alterações</button>
+    </form>
+    <script src="../componentes/editaUser.js"></script>
+</body>
+
+</html>

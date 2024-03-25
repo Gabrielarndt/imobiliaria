@@ -1,3 +1,5 @@
+//  usuario.js
+ 
  // Função para obter o valor de um cookie por nome
  function getCookie(name) {
     const cookies = document.cookie.split(';');
@@ -29,16 +31,21 @@ async function carregarInformacoesUsuario() {
 
         // Extrair as informações do usuário da resposta
         const data = await response.json();
-        const { username, email, phone, createdAt } = data;
+        const { username, email, phone } = data;
 
         document.getElementById('nomeUsuario').textContent = username;
         document.getElementById('emailUsuario').textContent = email;
         document.getElementById('phoneUsuario').textContent = phone;
-        document.getElementById('criado').textContent = createdAt;
     } catch (error) {
         console.error('Erro ao carregar informações do usuário:', error);
     }
 }
+
+
+document.getElementById('btnEditarInformacoes').addEventListener('click', function () {
+    // Redireciona o usuário para a página de edição de informações
+    window.location.href = '/editaUser';
+});
 
 // Chamar a função para carregar as informações do usuário quando a página for carregada
 window.onload = carregarInformacoesUsuario;
