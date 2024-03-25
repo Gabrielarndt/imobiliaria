@@ -41,11 +41,16 @@ async function carregarInformacoesUsuario() {
     }
 }
 
+document.getElementById('btnEditarSenha').addEventListener('click', function () {
+    // Redireciona o usuário para a página de edição de informações
+    window.location.href = '/editaSenha';
+});
 
 document.getElementById('btnEditarInformacoes').addEventListener('click', function () {
     // Redireciona o usuário para a página de edição de informações
     window.location.href = '/editaUser';
 });
+
 
 // Chamar a função para carregar as informações do usuário quando a página for carregada
 window.onload = carregarInformacoesUsuario;

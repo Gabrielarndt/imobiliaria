@@ -131,14 +131,19 @@ app.post('/api/editarUsuario', async (req, res) => {
 });
 
 app.get('/editaSenha', (req, res) => {
-  res.render('editaSenha');
+  res.render('editaSenha'); // Renderiza a página de edição de senha
 });
 
-// Rota para processar a solicitação de atualização de senha
+// Rota para atualizar a senha do usuário
 app.post('/api/editarSenha', async (req, res) => {
   try {
       const userId = req.cookies.userId; // Obtém o ID do usuário autenticado
-      const { oldPassword, newPassword } = req.body; // Obtém as senhas antiga e nova
+      const { oldPassword, newPassword, confirmPassword } = req.body; // Obtém as senhas fornecidas
+
+      // Verifica se a nova senha e a confirmação são iguais
+      if (newPassword !== confirmPassword) {
+          return res.status(400).json({ message: 'A nova senha e a confirmação de senha não coincidem.' });
+      }
 
       // Verifica se o usuário existe no banco de dados
       const user = await User.findByPk(userId);
@@ -146,14 +151,17 @@ app.post('/api/editarSenha', async (req, res) => {
           return res.status(404).json({ message: 'Usuário não encontrado' });
       }
 
-      // Verifica se a senha antiga está correta
+      // Verifica se a senha antiga fornecida pelo usuário está correta
       const passwordMatch = await bcrypt.compare(oldPassword, user.password);
       if (!passwordMatch) {
           return res.status(401).json({ message: 'Senha antiga incorreta. Não é possível atualizar a senha.' });
       }
 
-      // Atualiza a senha do usuário
-      user.password = newPassword;
+      // Criptografa a nova senha
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      // Atualiza a senha do usuário no banco de dados
+      user.password = hashedPassword;
       await user.save();
 
       // Retorna uma resposta de sucesso
@@ -163,6 +171,7 @@ app.post('/api/editarSenha', async (req, res) => {
       return res.status(500).json({ message: 'Erro interno do servidor' });
   }
 });
+
 
 
 // Configuração do multer para lidar com o upload de arquivos

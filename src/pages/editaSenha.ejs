@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Senha</title>
 </head>
-
 <body>
     <h1>Editar Senha</h1>
     <form id="editarSenhaForm" action="/api/editarSenha" method="POST">
+        <!-- Campos para editar a senha -->
         <label for="oldPassword">Senha Antiga:</label>
         <input type="password" id="oldPassword" name="oldPassword" required>
         <br>
@@ -19,9 +18,9 @@
         <label for="confirmPassword">Confirmar Nova Senha:</label>
         <input type="password" id="confirmPassword" name="confirmPassword" required>
         <br>
-        <button type="submit">Salvar Alterações</button>
+        <!-- Botão para enviar o formulário -->
+        <button type="submit">Salvar Nova Senha</button>
     </form>
     <script src="../componentes/editaSenha.js"></script>
 </body>
-
 </html>
