@@ -16,13 +16,8 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
         });
 
         if (response.ok) {
-            // O token será enviado automaticamente pelo navegador como um cookie
-            // Não é mais necessário armazenar o token no localStorage
-
-            // Redirecionar para a página do usuário
             window.location.href = '/usuario';
         } else if (response.status === 401) {
-            // Exibir alerta de credenciais incorretas
             alert('Email ou senha incorretos. Por favor, tente novamente.');
         } else {
             console.error('Erro ao fazer login:', response.statusText);
@@ -31,5 +26,30 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
     } catch (error) {
         console.error('Erro ao fazer login:', error);
         alert('Erro ao fazer login. Por favor, tente novamente.');
+    }
+});
+
+document.getElementById('password-toggle').addEventListener('click', function () {
+    const passwordInput = document.getElementById('password');
+    const passwordIcon = document.querySelector('#password-toggle i');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        passwordIcon.classList.remove('bx-hide');
+        passwordIcon.classList.add('bx-show');
+    } else {
+        passwordInput.type = 'password';
+        passwordIcon.classList.remove('bx-show');
+        passwordIcon.classList.add('bx-hide');
+    }
+});
+
+document.getElementById('email').addEventListener('focus', function () {
+    document.querySelector('.input_box').classList.add('email-focused');
+});
+
+document.getElementById('email').addEventListener('blur', function () {
+    if (!this.value) {
+        document.querySelector('.input_box').classList.remove('email-focused');
     }
 });

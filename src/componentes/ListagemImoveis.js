@@ -1,3 +1,5 @@
+// listagemImoveis.js
+
 document.addEventListener('DOMContentLoaded', async () => {
     const userId = getUserId(); // Obtenha o userId antes de usar na função toggleFavorite
     const response = await fetch('http://localhost:3000/api/imoveis');

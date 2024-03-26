@@ -1,3 +1,5 @@
+// cadastrarImovel.js
+
 const form = document.getElementById('cadastro-imovel-form');
 const selectedPhotosContainer = document.getElementById('selected-photos-container');
 let selectedPhotos = [];

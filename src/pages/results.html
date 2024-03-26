@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados da Pesquisa</title>
+    <!-- Adicione os links para seus arquivos CSS aqui, se necessário -->
+</head>
+
+<body>
+    <header>
+        <!-- Adicione o cabeçalho da página aqui, se necessário -->
+    </header>
+
+    <main>
+        <section id="search-results" class="p-5 bg-light text-dark">
+            <div class="container">
+                <h1>Resultados da Pesquisa</h1>
+                <div id="search-results-list" class="row">
+                    <!-- Esta div será preenchida dinamicamente com os imóveis filtrados -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <!-- Adicione o rodapé da página aqui, se necessário -->
+    </footer>
+
+    <!-- Adicione os links para seus arquivos JavaScript aqui -->
+    <script>
+        // Extrai os parâmetros da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const tipoImovel = urlParams.get('tipoImovel');
+        const cidade = urlParams.get('cidade');
+        const precoMinimo = urlParams.get('precoMinimo');
+        const precoMaximo = urlParams.get('precoMaximo');
+        const quartos = urlParams.get('quartos');
+        const suites = urlParams.get('suites');
+        const vagasGaragem = urlParams.get('vagasGaragem');
+
+        // Função para filtrar os imóveis com base nos parâmetros da URL
+        function filterImoveis(imoveis) {
+            // Implemente a lógica para filtrar os imóveis com base nos parâmetros da URL
+            // Você pode usar os parâmetros aqui para realizar o filtro
+
+            // Exemplo básico: apenas exibe os parâmetros filtrados na página
+            const filteredImoveis = imoveis.filter(imovel => {
+                return imovel.tipo === tipoImovel &&
+                    imovel.cidade === cidade &&
+                    imovel.preco >= precoMinimo &&
+                    imovel.preco <= precoMaximo &&
+                    imovel.quartos >= quartos &&
+                    imovel.suites >= suites &&
+                    imovel.vagasGaragem >= vagasGaragem;
+            });
+
+            return filteredImoveis;
+        }
+
+        // Exemplo de dados de imóveis (substitua isso com seus próprios dados)
+        const imoveis = [
+            { tipo: 'Casa', cidade: 'Itajaí', preco: 300000, quartos: 3, suites: 2, vagasGaragem: 2 },
+            { tipo: 'Apartamento', cidade: 'Balneário Camboriú', preco: 500000, quartos: 2, suites: 1, vagasGaragem: 1 },
+            { tipo: 'Terreno', cidade: 'Itapema', preco: 150000, quartos: 0, suites: 0, vagasGaragem: 0 }
+            // Adicione mais imóveis conforme necessário
+        ];
+
+        // Filtra os imóveis com base nos parâmetros da URL
+        const filteredImoveis = filterImoveis(imoveis);
+
+        // Exibe os imóveis filtrados na página
+        const searchResultsList = document.getElementById('search-results-list');
+        filteredImoveis.forEach(imovel => {
+            const imovelCard = document.createElement('div');
+            imovelCard.classList.add('col-md-4');
+            imovelCard.innerHTML = `
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">${imovel.tipo}</h5>
+                        <p class="card-text">Preço: R$ ${imovel.preco}</p>
+                        <p class="card-text">Cidade: ${imovel.cidade}</p>
+                        <p class="card-text">Quartos: ${imovel.quartos}</p>
+                        <p class="card-text">Suítes: ${imovel.suites}</p>
+                        <p class="card-text">Vagas de Garagem: ${imovel.vagasGaragem}</p>
+                    </div>
+                </div>
+            `;
+            searchResultsList.appendChild(imovelCard);
+        });
+    </script>
+</body>
+
+</html>

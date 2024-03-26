@@ -28,3 +28,14 @@ document.getElementById('editarForm').addEventListener('submit', async (event) =
         alert('Erro ao atualizar informações do usuário. Por favor, tente novamente.');
     }
 });
+
+document.getElementById('password-toggle').addEventListener('click', function () {
+    const passwordInput = document.getElementById('password');
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+    } else {
+        passwordInput.type = 'password';
+        this.innerHTML = '<i class="fas fa-eye"></i>';
+    }
+});

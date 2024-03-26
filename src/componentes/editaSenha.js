@@ -32,3 +32,36 @@ document.getElementById('editarSenhaForm').addEventListener('submit', async (eve
         alert('Erro ao atualizar a senha. Por favor, tente novamente.');
     }
 });
+
+document.getElementById('password-toggle').addEventListener('click', function () {
+    const passwordInput = document.getElementById('oldPassword');
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+    } else {
+        passwordInput.type = 'password';
+        this.innerHTML = '<i class="fas fa-eye"></i>';
+    }
+});
+
+document.getElementById('password-toggle2').addEventListener('click', function () {
+    const passwordInput = document.getElementById('newPassword');
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+    } else {
+        passwordInput.type = 'password';
+        this.innerHTML = '<i class="fas fa-eye"></i>';
+    }
+});
+
+document.getElementById('password-toggle3').addEventListener('click', function () {
+    const passwordInput = document.getElementById('confirmPassword');
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+    } else {
+        passwordInput.type = 'password';
+        this.innerHTML = '<i class="fas fa-eye"></i>';
+    }
+});
