@@ -111,7 +111,7 @@ form.addEventListener('submit', async (event) => {
         });
 
         if (response.ok) {
-            window.location.href = '/sucesso';
+            window.location.href = '/cadastroImovel';
         } else {
             console.error('Erro ao cadastrar imóvel:', response.statusText);
         }

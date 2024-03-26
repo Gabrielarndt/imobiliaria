@@ -42,10 +42,11 @@
                 const precoMaximo = urlParams.get('precoMaximo');
                 const quartos = urlParams.get('quartos');
                 const suites = urlParams.get('suites');
-                const vagasGaragem = urlParams.get('vagasGaragem');
+                const garagens = urlParams.get('garagens');
+                const tipoImovel = urlParams.get('tipoImovel');
 
                 // Construir a URL da rota de busca de imóveis com os parâmetros de busca
-                const url = `/api/imoveis/buscar?tipo=${tipo}&cidade=${cidade}&precoMinimo=${precoMinimo}&precoMaximo=${precoMaximo}&quartos=${quartos}&suites=${suites}&vagasGaragem=${vagasGaragem}`;
+                const url = `/api/imoveis/buscar?tipo=${tipo}&cidade=${cidade}&precoMinimo=${precoMinimo}&precoMaximo=${precoMaximo}&quartos=${quartos}&suites=${suites}&garagens=${garagens}&tipoImovel=${tipoImovel}`;
 
                 // Realizar uma solicitação GET para a rota de busca de imóveis
                 const response = await fetch(url);
@@ -78,6 +79,7 @@
                             <p class="card-text">Quartos: ${imovel.quartos}</p>
                             <p class="card-text">Suítes: ${imovel.suites}</p>
                             <p class="card-text">Vagas de Garagem: ${imovel.garagens}</p>
+                            <p class="card-text">Tipo Imovel: ${imovel.tipoImovel}</p>
                         </div>
                     </div>
                 `;

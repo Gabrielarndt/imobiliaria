@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
 router.get('/buscar', async (req, res) => {
     try {
         // Extrair os parâmetros de busca da query da requisição
-        const { tipo, cidade, precoMinimo, precoMaximo, quartos, suites, garagens } = req.query;
+        const { tipo, cidade, precoMinimo, precoMaximo, quartos, suites, garagens, tipoImovel } = req.query;
 
         let whereClause = {};
         if (tipo) whereClause.tipo = tipo;
@@ -63,6 +63,7 @@ router.get('/buscar', async (req, res) => {
         if (quartos) whereClause.quartos = parseInt(quartos);
         if (suites) whereClause.suites = parseInt(suites);
         if (garagens) whereClause.garagens = parseInt(garagens);
+        if (tipoImovel) whereClause.tipoImovel = tipoImovel;
 
         const imoveisFiltrados = await Imoveis.findAll({ where: whereClause });
 
