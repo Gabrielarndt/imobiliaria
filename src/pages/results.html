@@ -1,3 +1,5 @@
+<!-- results.html -->
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -18,7 +20,7 @@
             <div class="container">
                 <h1>Resultados da Pesquisa</h1>
                 <div id="search-results-list" class="row">
-                    <!-- Esta div será preenchida dinamicamente com os imóveis filtrados -->
+                    <!-- Esta div será preenchida dinamicamente com os imóveis -->
                 </div>
             </div>
         </section>
@@ -30,65 +32,61 @@
 
     <!-- Adicione os links para seus arquivos JavaScript aqui -->
     <script>
-        // Extrai os parâmetros da URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const tipoImovel = urlParams.get('tipoImovel');
-        const cidade = urlParams.get('cidade');
-        const precoMinimo = urlParams.get('precoMinimo');
-        const precoMaximo = urlParams.get('precoMaximo');
-        const quartos = urlParams.get('quartos');
-        const suites = urlParams.get('suites');
-        const vagasGaragem = urlParams.get('vagasGaragem');
+        // Função para buscar os imóveis e exibir na página
+        async function fetchAndDisplayImoveis() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const tipo = urlParams.get('tipo');
+                const cidade = urlParams.get('cidade');
+                const precoMinimo = urlParams.get('precoMinimo');
+                const precoMaximo = urlParams.get('precoMaximo');
+                const quartos = urlParams.get('quartos');
+                const suites = urlParams.get('suites');
+                const vagasGaragem = urlParams.get('vagasGaragem');
 
-        // Função para filtrar os imóveis com base nos parâmetros da URL
-        function filterImoveis(imoveis) {
-            // Implemente a lógica para filtrar os imóveis com base nos parâmetros da URL
-            // Você pode usar os parâmetros aqui para realizar o filtro
+                // Construir a URL da rota de busca de imóveis com os parâmetros de busca
+                const url = `/api/imoveis/buscar?tipo=${tipo}&cidade=${cidade}&precoMinimo=${precoMinimo}&precoMaximo=${precoMaximo}&quartos=${quartos}&suites=${suites}&vagasGaragem=${vagasGaragem}`;
 
-            // Exemplo básico: apenas exibe os parâmetros filtrados na página
-            const filteredImoveis = imoveis.filter(imovel => {
-                return imovel.tipo === tipoImovel &&
-                    imovel.cidade === cidade &&
-                    imovel.preco >= precoMinimo &&
-                    imovel.preco <= precoMaximo &&
-                    imovel.quartos >= quartos &&
-                    imovel.suites >= suites &&
-                    imovel.vagasGaragem >= vagasGaragem;
-            });
+                // Realizar uma solicitação GET para a rota de busca de imóveis
+                const response = await fetch(url);
+                const imoveis = await response.json();
 
-            return filteredImoveis;
+                // Exibir os imóveis na página
+                displayImoveis(imoveis);
+            } catch (error) {
+                console.error('Erro ao buscar imóveis:', error);
+            }
         }
 
-        // Exemplo de dados de imóveis (substitua isso com seus próprios dados)
-        const imoveis = [
-            { tipo: 'Casa', cidade: 'Itajaí', preco: 300000, quartos: 3, suites: 2, vagasGaragem: 2 },
-            { tipo: 'Apartamento', cidade: 'Balneário Camboriú', preco: 500000, quartos: 2, suites: 1, vagasGaragem: 1 },
-            { tipo: 'Terreno', cidade: 'Itapema', preco: 150000, quartos: 0, suites: 0, vagasGaragem: 0 }
-            // Adicione mais imóveis conforme necessário
-        ];
+        // Função para exibir os imóveis na página
+        function displayImoveis(imoveis) {
+            const searchResultsList = document.getElementById('search-results-list');
 
-        // Filtra os imóveis com base nos parâmetros da URL
-        const filteredImoveis = filterImoveis(imoveis);
+            // Limpa a lista de resultados
+            searchResultsList.innerHTML = '';
 
-        // Exibe os imóveis filtrados na página
-        const searchResultsList = document.getElementById('search-results-list');
-        filteredImoveis.forEach(imovel => {
-            const imovelCard = document.createElement('div');
-            imovelCard.classList.add('col-md-4');
-            imovelCard.innerHTML = `
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">${imovel.tipo}</h5>
-                        <p class="card-text">Preço: R$ ${imovel.preco}</p>
-                        <p class="card-text">Cidade: ${imovel.cidade}</p>
-                        <p class="card-text">Quartos: ${imovel.quartos}</p>
-                        <p class="card-text">Suítes: ${imovel.suites}</p>
-                        <p class="card-text">Vagas de Garagem: ${imovel.vagasGaragem}</p>
+            // Loop pelos imóveis e cria os elementos HTML correspondentes
+            imoveis.forEach(imovel => {
+                const imovelCard = document.createElement('div');
+                imovelCard.classList.add('col-md-4');
+                imovelCard.innerHTML = `
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">${imovel.tipo}</h5>
+                            <p class="card-text">Preço: R$ ${imovel.preco}</p>
+                            <p class="card-text">Cidade: ${imovel.cidade}</p>
+                            <p class="card-text">Quartos: ${imovel.quartos}</p>
+                            <p class="card-text">Suítes: ${imovel.suites}</p>
+                            <p class="card-text">Vagas de Garagem: ${imovel.garagens}</p>
+                        </div>
                     </div>
-                </div>
-            `;
-            searchResultsList.appendChild(imovelCard);
-        });
+                `;
+                searchResultsList.appendChild(imovelCard);
+            });
+        }
+
+        // Chama a função para buscar e exibir os imóveis quando a página é carregada
+        fetchAndDisplayImoveis();
     </script>
 </body>
 

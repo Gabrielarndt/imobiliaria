@@ -63,6 +63,40 @@ app.get('/logout', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'logout.html'));
 });
 
+app.get('/resultado', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'pages', 'results.html'));
+});
+
+app.get('/api/imoveis', async (req, res) => {
+  try {
+      const { tipo, cidade, precoMinimo, precoMaximo, quartos, suites, vagasGaragem } = req.query;
+      console.log("Parâmetros de consulta:", req.query);
+
+      let query = {};
+      // Monta a query com base nos parâmetros de filtro recebidos
+      if (tipo) query.tipo = tipo;
+      if (cidade) query.cidade = cidade;
+      if (precoMinimo) query.preco = { $gte: parseFloat(precoMinimo) };
+      if (precoMaximo) {
+          if (!query.preco) query.preco = {};
+          query.preco.$lte = parseFloat(precoMaximo);
+      }
+      if (quartos) query.quartos = { $gte: parseInt(quartos) };
+      if (suites) query.suites = { $gte: parseInt(suites) };
+      if (vagasGaragem) query.vagasGaragem = { $gte: parseInt(vagasGaragem) };
+
+      console.log("Query MongoDB:", query);
+
+      const imoveis = await Imovel.find(query); // Busca os imóveis com base na query
+      console.log("Imóveis encontrados:", imoveis.length);
+      res.json(imoveis); // Retorna os imóveis em formato JSON
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Erro ao buscar imóveis.' });
+  }
+});
+
+
 // Rota protegida que requer autenticação
 app.get('/usuario', verificarTokenEObterDetalhesUsuario, (req, res) => {
   res.render('usuario');
@@ -141,38 +175,38 @@ app.get('/editaSenha', (req, res) => {
 // Rota para atualizar a senha do usuário
 app.post('/api/editarSenha', async (req, res) => {
   try {
-      const userId = req.cookies.userId; // Obtém o ID do usuário autenticado
-      const { oldPassword, newPassword, confirmPassword } = req.body; // Obtém as senhas fornecidas
+    const userId = req.cookies.userId; // Obtém o ID do usuário autenticado
+    const { oldPassword, newPassword, confirmPassword } = req.body; // Obtém as senhas fornecidas
 
-      // Verifica se a nova senha e a confirmação são iguais
-      if (newPassword !== confirmPassword) {
-          return res.status(400).json({ message: 'A nova senha e a confirmação de senha não coincidem.' });
-      }
+    // Verifica se a nova senha e a confirmação são iguais
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: 'A nova senha e a confirmação de senha não coincidem.' });
+    }
 
-      // Verifica se o usuário existe no banco de dados
-      const user = await User.findByPk(userId);
-      if (!user) {
-          return res.status(404).json({ message: 'Usuário não encontrado' });
-      }
+    // Verifica se o usuário existe no banco de dados
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
 
-      // Verifica se a senha antiga fornecida pelo usuário está correta
-      const passwordMatch = await bcrypt.compare(oldPassword, user.password);
-      if (!passwordMatch) {
-          return res.status(401).json({ message: 'Senha antiga incorreta. Não é possível atualizar a senha.' });
-      }
+    // Verifica se a senha antiga fornecida pelo usuário está correta
+    const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Senha antiga incorreta. Não é possível atualizar a senha.' });
+    }
 
-      // Criptografa a nova senha
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
+    // Criptografa a nova senha
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-      // Atualiza a senha do usuário no banco de dados
-      user.password = hashedPassword;
-      await user.save();
+    // Atualiza a senha do usuário no banco de dados
+    user.password = hashedPassword;
+    await user.save();
 
-      // Retorna uma resposta de sucesso
-      return res.status(200).json({ message: 'Senha atualizada com sucesso!' });
+    // Retorna uma resposta de sucesso
+    return res.status(200).json({ message: 'Senha atualizada com sucesso!' });
   } catch (error) {
-      console.error('Erro ao atualizar a senha:', error);
-      return res.status(500).json({ message: 'Erro interno do servidor' });
+    console.error('Erro ao atualizar a senha:', error);
+    return res.status(500).json({ message: 'Erro interno do servidor' });
   }
 });
 

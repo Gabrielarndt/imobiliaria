@@ -34,7 +34,7 @@ module.exports = {
         allowNull: true,
       },
       preco: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: true,
       },
       cidade: {

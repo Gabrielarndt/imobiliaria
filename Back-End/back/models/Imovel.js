@@ -34,7 +34,7 @@ const Imoveis = sequelize.define('Imoveis', {
     allowNull: true,
   },
   preco: {
-    type: DataTypes.TEXT,
+    type: DataTypes.INTEGER,
     allowNull: true,
   },
   cidade: {

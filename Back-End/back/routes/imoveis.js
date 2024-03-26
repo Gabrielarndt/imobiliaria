@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const ImovelController = require('../controllers/ImovelController');
-const Imovel = require('../models/Imovel');
+const Imoveis = require('../models/Imovel');
 const path = require('path');
 
 // Rota para lidar com o envio de dados do formulário e criar um novo imóvel
@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
         }
 
         // Crie um novo imóvel com os dados recebidos do formulário
-        const novoImovel = await Imovel.create(imovelData);
+        const novoImovel = await Imoveis.create(imovelData);
         res.status(201).json(novoImovel);
     } catch (error) {
         console.error('Erro ao cadastrar imóvel:', error);
@@ -36,10 +36,52 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.get('/buscar', async (req, res) => {
+    try {
+        // Extrair os parâmetros de busca da query da requisição
+        const { tipo, cidade, precoMinimo, precoMaximo, quartos, suites, garagens } = req.query;
+
+        // Construir um objeto de filtro com base nos parâmetros recebidos
+        const filtro = {};
+        if (tipo) filtro.tipo = tipo; // Certifique-se de que tipoImovel está sendo passado corretamente
+        if (cidade) filtro.cidade = cidade;
+
+        if (precoMinimo !== undefined && precoMinimo !== '' && !isNaN(precoMinimo) &&
+        precoMaximo !== undefined && precoMaximo !== '' && !isNaN(precoMaximo)) {
+        filtro.preco = {
+            $gte: parseInt(precoMinimo),
+            $lte: parseInt(precoMaximo)
+        };
+    } else if (precoMinimo !== undefined && precoMinimo !== '' && !isNaN(precoMinimo)) {
+        // Verificar se apenas o preço mínimo foi definido e é um número
+        filtro.preco = { $gte: parseInt(precoMinimo) };
+    } else if (precoMaximo !== undefined && precoMaximo !== '' && !isNaN(precoMaximo)) {
+        // Verificar se apenas o preço máximo foi definido e é um número
+        filtro.preco = { $lte: parseInt(precoMaximo) };
+    }
+
+        if (quartos) filtro.quartos = parseInt(quartos);
+        if (suites) filtro.suites = parseInt(suites);
+        if (garagens) filtro.garagens = parseInt(garagens);
+
+        // Realizar a consulta no banco de dados usando o objeto de filtro construído
+        const imoveisFiltrados = await Imoveis.findAll({ where: filtro });
+
+        // Retornar os imóveis filtrados como resposta
+        res.status(200).json(imoveisFiltrados);
+    } catch (error) {
+        console.error('Erro ao buscar imóveis:', error);
+        res.status(500).json({ error: 'Erro ao buscar imóveis' });
+    }
+});
+
+
+
+
 // Rota para obter detalhes de um imóvel específico
 router.get('/:id', async (req, res) => {
     try {
-        const imovel = await Imovel.findByPk(req.params.id);
+        const imovel = await Imoveis.findByPk(req.params.id);
         if (!imovel) {
             return res.status(404).json({ message: 'Imóvel não encontrado' });
         }
@@ -55,6 +97,7 @@ router.get('/:id', async (req, res) => {
             tipo: imovel.tipo,
             quartos: imovel.quartos,
             suites: imovel.suites,
+            garagens: imovel.garagens,
             preco: imovel.preco,
             cidade: imovel.cidade,
             bairro: imovel.bairro,
@@ -63,7 +106,7 @@ router.get('/:id', async (req, res) => {
             fotos: imagensUrls
             // Adicione outros detalhes do imóvel conforme necessário
         };
-                
+
         res.status(200).json(resposta);
     } catch (error) {
         console.error('Erro ao obter detalhes do imóvel:', error);
