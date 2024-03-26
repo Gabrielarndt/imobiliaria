@@ -24,7 +24,7 @@ async function registerUser(req, res) {
 
         const hashedPassword = await bcrypt.hash(password, 10);
         await User.create({ email, username, phone, password: hashedPassword });
-        return res.status(201).json({ message: 'Usuário registrado com sucesso!' });
+        return res.redirect('/login');
     } catch (error) {
         console.error('Error:', error);
         return res.status(500).json({ message: 'Cadastro inválido, verifique as informações' });
@@ -66,7 +66,7 @@ async function loginUser(req, res) {
 async function logoutUser(req, res) {
     try {
         res.clearCookie('token');
-        return res.status(200).json({ message: 'Logout efetuado com sucesso' });
+        return res.redirect('/');
     } catch (error) {
         console.error('Erro:', error);
         res.status(500).json({ message: 'Erro interno do servidor' });

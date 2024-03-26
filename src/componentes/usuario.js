@@ -51,6 +51,11 @@ document.getElementById('btnEditarInformacoes').addEventListener('click', functi
     window.location.href = '/editaUser';
 });
 
+document.getElementById('logout').addEventListener('click', function () {
+    // Redireciona o usuário para a página de edição de informações
+    window.location.href = '/logout';
+});
+
 
 // Chamar a função para carregar as informações do usuário quando a página for carregada
 window.onload = carregarInformacoesUsuario;

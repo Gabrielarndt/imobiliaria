@@ -1,26 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Senha</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .toggle-password {
+            cursor: pointer;
+            user-select: none;
+        }
+    </style>
 </head>
-<body>
-    <h1>Editar Senha</h1>
-    <form id="editarSenhaForm" action="/api/editarSenha" method="POST">
+
+<body class="container">
+    <h1 class="mt-5">Editar Senha</h1>
+    <form id="editarSenhaForm" action="/api/editarSenha" method="POST" class="mt-4">
         <!-- Campos para editar a senha -->
-        <label for="oldPassword">Senha Antiga:</label>
-        <input type="password" id="oldPassword" name="oldPassword" required>
-        <br>
-        <label for="newPassword">Nova Senha:</label>
-        <input type="password" id="newPassword" name="newPassword" required>
-        <br>
-        <label for="confirmPassword">Confirmar Nova Senha:</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" required>
-        <br>
+        <div class="mb-3">
+            <label for="oldPassword" class="form-label">Senha Antiga:</label>
+            <div class="input-group">
+                <input type="password" id="oldPassword" name="oldPassword" class="form-control"
+                    aria-describedby="password-toggle" required>
+                <button type="button" class="btn btn-outline-secondary toggle-password" id="password-toggle"><i class="bi bi-eye"></i></button>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="newPassword" class="form-label">Nova Senha:</label>
+            <input type="password" id="newPassword" name="newPassword" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Confirmar Nova Senha:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+        </div>
         <!-- Botão para enviar o formulário -->
-        <button type="submit">Salvar Nova Senha</button>
+        <button type="submit" class="btn btn-primary">Salvar Nova Senha</button>
     </form>
     <script src="../componentes/editaSenha.js"></script>
+    <script>
+        document.getElementById('password-toggle').addEventListener('click', function () {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.querySelector('i').classList.toggle('bi-eye');
+            this.querySelector('i').classList.toggle('bi-eye-slash');
+        });
+    </script>
 </body>
+
 </html>
