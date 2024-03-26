@@ -59,10 +59,21 @@ router.get('/buscar', async (req, res) => {
             whereClause.preco = { [db.Sequelize.Op.lte]: precoMaximoInt };
         }
 
+        const quartosInt = parseInt(quartos)
+        const suitesInt = parseInt(suites)
+        const garagensInt = parseInt(garagens)
 
-        if (quartos) whereClause.quartos = parseInt(quartos);
-        if (suites) whereClause.suites = parseInt(suites);
-        if (garagens) whereClause.garagens = parseInt(garagens);
+        if (quartosInt == 5) {
+            whereClause.quartos =  { [db.Sequelize.Op.gte]: quartosInt }
+        } else if(quartos) {whereClause.quartos = parseInt(quartos)}
+        if (suitesInt == 5) {
+            whereClause.quartos =  { [db.Sequelize.Op.gte]: suitesInt }
+        } else if(suites) {whereClause.suites = parseInt(suites)}
+        if (garagensInt == 5) {
+            whereClause.quartos =  { [db.Sequelize.Op.gte]: garagensInt }
+        } else if(garagens) {whereClause.suites = parseInt(garagens)}
+
+
         if (tipoImovel) whereClause.tipoImovel = tipoImovel;
 
         const imoveisFiltrados = await Imoveis.findAll({ where: whereClause });

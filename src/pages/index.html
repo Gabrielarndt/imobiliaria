@@ -128,7 +128,8 @@
                                             <button type="button" class="opcao" name="quartos" value="2">2</button>
                                             <button type="button" class="opcao" name="quartos" value="3">3</button>
                                             <button type="button" class="opcao" name="quartos" value="4">4</button>
-                                            <button type="button" class="opcao5" name="quartos" value="5">5+</button>
+                                            <button type="button" class="opcao5 opcao" name="quartos"
+                                                value="5">5+</button>
                                         </div>
                                     </div>
                                 </div>
@@ -141,7 +142,8 @@
                                             <button type="button" class="opcao" name="suites" value="2">2</button>
                                             <button type="button" class="opcao" name="suites" value="3">3</button>
                                             <button type="button" class="opcao" name="suites" value="4">4</button>
-                                            <button type="button" class="opcao5" name="suites" value="5">5+</button>
+                                            <button type="button" class="opcao5 opcao" name="suites"
+                                                value="5">5+</button>
                                         </div>
                                     </div>
                                 </div>
@@ -154,7 +156,8 @@
                                             <button type="button" class="opcao" name="garagens" value="2">2</button>
                                             <button type="button" class="opcao" name="garagens" value="3">3</button>
                                             <button type="button" class="opcao" name="garagens" value="4">4</button>
-                                            <button type="button" class="opcao5" name="garagens" value="5">5+</button>
+                                            <button type="button" class="opcao5 opcao" name="garagens"
+                                                value="5">5+</button>
                                         </div>
                                     </div>
                                 </div>
@@ -179,22 +182,41 @@
         </div>
     </footer>
     <script>
-        const opcoes = document.querySelectorAll('.opcao');
-        opcoes.forEach(opcao => {
-            opcao.addEventListener('click', () => {
-                // Remover a classe 'selected' de todas as opções
-                opcoes.forEach(op => op.classList.remove('selected'));
-                // Adicionar a classe 'selected' apenas à opção clicada
-                opcao.classList.add('selected');
+        const grupos = document.querySelectorAll('.btn-group');
+
+        // Variáveis para armazenar os valores selecionados
+        let quartosSelecionados = "";
+        let suitesSelecionadas = "";
+        let garagensSelecionadas = "";
+
+        grupos.forEach(grupo => {
+            const opcoes = grupo.querySelectorAll('.opcao');
+
+            opcoes.forEach(opcao => {
+                opcao.addEventListener('click', () => {
+                    // Verificar se o botão está selecionado
+                    const isSelected = opcao.classList.contains('selected');
+
+                    // Remover a classe 'selected' de todos os botões do grupo
+                    opcoes.forEach(op => op.classList.remove('selected'));
+
+                    // Se o botão não estiver selecionado, armazenar o valor selecionado
+                    if (!isSelected) {
+                        opcao.classList.add('selected');
+
+                        // Armazenar o valor do botão selecionado
+                        if (grupo.getAttribute('aria-label') === 'Quartos') {
+                            quartosSelecionados = opcao.value;
+                        } else if (grupo.getAttribute('aria-label') === 'Suítes') {
+                            suitesSelecionadas = opcao.value;
+                        } else if (grupo.getAttribute('aria-label') === 'Vagas de Garagem') {
+                            garagensSelecionadas = opcao.value;
+                        }
+                    } 
+                });
             });
         });
 
-        const botao = document.querySelector('.botao');
-        botao.addEventListener('click', () => {
-            // Enviar os parâmetros do filtro para a página results.html
-            const form = document.getElementById('searchForm');
-            form.submit();
-        });
         // Função para lidar com o envio do formulário de pesquisa
         function handleSearchFormSubmit(event) {
             event.preventDefault();
@@ -206,9 +228,6 @@
             var precoMinimo = document.querySelector('[name="precoMinimo"]').value;
             var precoMaximo = document.querySelector('[name="precoMaximo"]').value;
             var bairro = document.querySelector('[name="bairro"]').value;
-            var quartos = document.querySelector('[name="quartos"]').value;
-            var suites = document.querySelector('[name="suites"]').value;
-            var garagens = document.querySelector('[name="garagens"]').value;
 
             // Criar a URL com os parâmetros do formulário
             var url = 'resultado?tipo=' + tipo +
@@ -217,9 +236,9 @@
                 '&precoMinimo=' + precoMinimo +
                 '&precoMaximo=' + precoMaximo +
                 '&bairro=' + bairro +
-                '&quartos=' + quartos +
-                '&suites=' + suites +
-                '&garagens=' + garagens;
+                '&quartos=' + quartosSelecionados +
+                '&suites=' + suitesSelecionadas +
+                '&garagens=' + garagensSelecionadas;
 
             // Redirecionar para a página de resultados com os parâmetros do formulário
             window.location.href = url;

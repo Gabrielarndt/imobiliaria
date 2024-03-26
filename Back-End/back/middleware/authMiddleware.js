@@ -23,7 +23,6 @@ function verificarTokenEObterDetalhesUsuario(req, res, next) {
 
 function authenticateJWT(req, res, next) {
     // Verifique se o token está presente no cabeçalho Authorization
-    
     const authHeader = req.cookies.token;
     if (!authHeader) {
         return res.status(401).json({ message: 'Token de autenticação não fornecido' });
@@ -33,11 +32,18 @@ function authenticateJWT(req, res, next) {
         // Verifique e decodifique o token usando a chave secreta
         const decoded = jwt.verify(authHeader, 'seu_segredo');
         req.user = decoded; // Adicione o payload do token decodificado ao objeto de solicitação (req.user)
+
+        // Verifique se o usuário é o usuário específico que você deseja autorizar
+        if (req.user.id !== 13) {
+            return res.status(403).json({ message: 'Você não tem permissão para acessar esta página' });
+        }
+
         next(); // Prossiga para a próxima middleware ou rota
     } catch (error) {
         console.error('Erro ao verificar o token:', error);
         return res.status(401).json({ message: 'Token inválido' });
     }
 }
+
 
 module.exports = { authenticateJWT, verificarTokenEObterDetalhesUsuario };

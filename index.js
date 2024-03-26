@@ -14,6 +14,7 @@ const passport = require('./Back-End/back/passport');
 const { verificarTokenEObterDetalhesUsuario } = require('./Back-End/back/middleware/authMiddleware')
 const cookieParser = require('cookie-parser');
 const usuarioRouter = require('./Back-End/back/routes/userRoutes')
+const { authenticateJWT } = require('./Back-End/back/middleware/authMiddleware');
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Define a porta do servidor
@@ -43,7 +44,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'index.html'));
 });
 
-app.get('/cadastroImovel', (req, res) => {
+app.get('/cadastroImovel',authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastro.html'));
 });
 
