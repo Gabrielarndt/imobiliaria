@@ -67,34 +67,34 @@ app.get('/resultado', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'results.html'));
 });
 
-app.get('/api/imoveis', async (req, res) => {
-  try {
-      const { tipo, cidade, precoMinimo, precoMaximo, quartos, suites, vagasGaragem } = req.query;
-      console.log("Parâmetros de consulta:", req.query);
+// app.get('/api/imoveis', async (req, res) => {
+//   try {
+//       const { tipo, cidade, precoMinimo, precoMaximo, quartos, suites, vagasGaragem } = req.query;
+//       console.log("Parâmetros de consulta:", req.query);
 
-      let query = {};
-      // Monta a query com base nos parâmetros de filtro recebidos
-      if (tipo) query.tipo = tipo;
-      if (cidade) query.cidade = cidade;
-      if (precoMinimo) query.preco = { $gte: parseFloat(precoMinimo) };
-      if (precoMaximo) {
-          if (!query.preco) query.preco = {};
-          query.preco.$lte = parseFloat(precoMaximo);
-      }
-      if (quartos) query.quartos = { $gte: parseInt(quartos) };
-      if (suites) query.suites = { $gte: parseInt(suites) };
-      if (vagasGaragem) query.vagasGaragem = { $gte: parseInt(vagasGaragem) };
+//       let query = {};
+//       // Monta a query com base nos parâmetros de filtro recebidos
+//       if (tipo) query.tipo = tipo;
+//       if (cidade) query.cidade = cidade;
+//       if (precoMinimo) query.preco = { $gte: parseFloat(precoMinimo) };
+//       if (precoMaximo) {
+//           if (!query.preco) query.preco = {};
+//           query.preco.$lte = parseFloat(precoMaximo);
+//       }
+//       if (quartos) query.quartos = { $gte: parseInt(quartos) };
+//       if (suites) query.suites = { $gte: parseInt(suites) };
+//       if (vagasGaragem) query.vagasGaragem = { $gte: parseInt(vagasGaragem) };
 
-      console.log("Query MongoDB:", query);
+//       console.log("Query MongoDB:", query);
 
-      const imoveis = await Imovel.find(query); // Busca os imóveis com base na query
-      console.log("Imóveis encontrados:", imoveis.length);
-      res.json(imoveis); // Retorna os imóveis em formato JSON
-  } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Erro ao buscar imóveis.' });
-  }
-});
+//       const imoveis = await Imovel.find(query); // Busca os imóveis com base na query
+//       console.log("Imóveis encontrados:", imoveis.length);
+//       res.json(imoveis); // Retorna os imóveis em formato JSON
+//   } catch (err) {
+//       console.error(err);
+//       res.status(500).json({ message: 'Erro ao buscar imóveis.' });
+//   }
+// });
 
 
 // Rota protegida que requer autenticação

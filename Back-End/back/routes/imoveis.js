@@ -5,6 +5,8 @@ const router = express.Router();
 const ImovelController = require('../controllers/ImovelController');
 const Imoveis = require('../models/Imovel');
 const path = require('path');
+const db = require('../config/database');
+const sequelize = db.sequelize; // Acessando o objeto sequelize
 
 // Rota para lidar com o envio de dados do formulário e criar um novo imóvel
 router.post('/', async (req, res) => {
@@ -41,31 +43,31 @@ router.get('/buscar', async (req, res) => {
         // Extrair os parâmetros de busca da query da requisição
         const { tipo, cidade, precoMinimo, precoMaximo, quartos, suites, garagens } = req.query;
 
-        // Construir um objeto de filtro com base nos parâmetros recebidos
-        const filtro = {};
-        if (tipo) filtro.tipo = tipo; // Certifique-se de que tipoImovel está sendo passado corretamente
-        if (cidade) filtro.cidade = cidade;
+        let whereClause = {};
+        if (tipo) whereClause.tipo = tipo;
+        if (cidade) whereClause.cidade = cidade;
 
-        if (precoMinimo !== undefined && precoMinimo !== '' && !isNaN(precoMinimo) &&
-        precoMaximo !== undefined && precoMaximo !== '' && !isNaN(precoMaximo)) {
-        filtro.preco = {
-            $gte: parseInt(precoMinimo),
-            $lte: parseInt(precoMaximo)
-        };
-    } else if (precoMinimo !== undefined && precoMinimo !== '' && !isNaN(precoMinimo)) {
-        // Verificar se apenas o preço mínimo foi definido e é um número
-        filtro.preco = { $gte: parseInt(precoMinimo) };
-    } else if (precoMaximo !== undefined && precoMaximo !== '' && !isNaN(precoMaximo)) {
-        // Verificar se apenas o preço máximo foi definido e é um número
-        filtro.preco = { $lte: parseInt(precoMaximo) };
-    }
+        const precoMinimoInt = parseInt(precoMinimo);
+        const precoMaximoInt = parseInt(precoMaximo);
 
-        if (quartos) filtro.quartos = parseInt(quartos);
-        if (suites) filtro.suites = parseInt(suites);
-        if (garagens) filtro.garagens = parseInt(garagens);
+        if (!isNaN(precoMinimoInt) && !isNaN(precoMaximoInt)) {
+            // Construir a cláusula WHERE do filtro de preço
+            whereClause.preco = { [db.Sequelize.Op.between]: [precoMinimoInt, precoMaximoInt] };
+        } else if (!isNaN(precoMinimoInt)) {
+            whereClause.preco = { [db.Sequelize.Op.gte]: precoMinimoInt };
+        } else if (!isNaN(precoMaximoInt)) {
+            whereClause.preco = { [db.Sequelize.Op.lte]: precoMaximoInt };
+        }
 
-        // Realizar a consulta no banco de dados usando o objeto de filtro construído
-        const imoveisFiltrados = await Imoveis.findAll({ where: filtro });
+
+        if (quartos) whereClause.quartos = parseInt(quartos);
+        if (suites) whereClause.suites = parseInt(suites);
+        if (garagens) whereClause.garagens = parseInt(garagens);
+
+        const imoveisFiltrados = await Imoveis.findAll({ where: whereClause });
+
+
+        console.log(typeof imoveisFiltrados); // Verifica o tipo de dados retornado
 
         // Retornar os imóveis filtrados como resposta
         res.status(200).json(imoveisFiltrados);
@@ -102,6 +104,7 @@ router.get('/:id', async (req, res) => {
             cidade: imovel.cidade,
             bairro: imovel.bairro,
             rua: imovel.rua,
+            tipoImovel: imovel.tipoImovel,
             status: imovel.status,
             fotos: imagensUrls
             // Adicione outros detalhes do imóvel conforme necessário
