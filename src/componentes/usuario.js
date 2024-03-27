@@ -36,6 +36,11 @@ async function carregarInformacoesUsuario() {
         document.getElementById('nomeUsuario').textContent = username;
         document.getElementById('emailUsuario').textContent = email;
         document.getElementById('phoneUsuario').textContent = phone;
+
+         // Verificar se o ID do usuário é 13 e mostrar o link "Cadastro de imóvel"
+         if (userId === '13') {
+            document.getElementById('linkCadastroImovel').style.display = 'block';
+        }
     } catch (error) {
         console.error('Erro ao carregar informações do usuário:', error);
     }

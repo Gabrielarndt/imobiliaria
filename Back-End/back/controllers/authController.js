@@ -8,6 +8,11 @@ async function registerUser(req, res) {
     try {
         const { email, password, username, phone } = req.body;
 
+        const existingUsername = await User.findOne({ where: { username } });
+        if (existingUsername) {
+            return res.status(400).json({ message: 'Nome já em uso' });
+        }
+
         // Verifique se o email já está em uso
         const existingUserEmail = await User.findOne({ where: { email } });
         if (existingUserEmail) {
@@ -24,12 +29,14 @@ async function registerUser(req, res) {
 
         const hashedPassword = await bcrypt.hash(password, 10);
         await User.create({ email, username, phone, password: hashedPassword });
-        return res.redirect('/login');
+
+        return res.status(200).json({ message: 'Usuário cadastrado com sucesso' }); // Resposta JSON
     } catch (error) {
         console.error('Error:', error);
         return res.status(500).json({ message: 'Cadastro inválido, verifique as informações' });
     }
 }
+
 
 
 

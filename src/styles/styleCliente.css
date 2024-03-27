@@ -222,6 +222,10 @@ a:hover {
   cursor: pointer;
 }
 
+.alert{
+  display: flex; color: rgb(255, 255, 255); text-align: center; background-color: rgba(0, 0, 0, 0.678); justify-content: center; font-size: 18px;
+}
+
 @media only screen and (max-width: 564px) {
   .wrapper {
     padding: 20px;
