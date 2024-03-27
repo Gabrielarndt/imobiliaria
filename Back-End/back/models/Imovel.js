@@ -1,7 +1,7 @@
-// models/Imovel.js
-
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const fs = require('fs');
+const path = require('path');
 
 const Imoveis = sequelize.define('Imoveis', {
   id: {
@@ -58,24 +58,33 @@ const Imoveis = sequelize.define('Imoveis', {
     allowNull: true,
   },
   fotos: {
-    type: DataTypes.JSON,
+    type: DataTypes.JSON, // Alterado para armazenar os nomes dos arquivos das imagens
     allowNull: true,
   },
   ordemFotos: {
-    type: DataTypes.JSON, // Armazenar a ordem das fotos como um array de IDs
+    type: DataTypes.JSON, // Mantido como está
     allowNull: true,
   }
-},
-  {
-    hooks: {
-      // Hook para atualizar a ordem das fotos sempre que o imóvel for atualizado
-      beforeUpdate: (imovel, options) => {
-        if (imovel.changed('fotos')) {
-          // Se as fotos foram alteradas, atualize a ordem das fotos
-          imovel.ordemFotos = imovel.fotos.map((foto, index) => index);
-        }
-      }
-    }
-  });
+});
+
+Imoveis.salvarImagens = async function(imovelId, fotos) {
+  const diretorioImoveis = path.join(__dirname, '../uploads'); // Substitua pelo caminho real onde deseja armazenar as imagens
+  const diretorioImovel = path.join(diretorioImoveis, imovelId.toString());
+
+  // Crie o diretório do imóvel se não existir
+  if (!fs.existsSync(diretorioImovel)) {
+    fs.mkdirSync(diretorioImovel);
+  }
+
+  // Salve cada imagem no diretório do imóvel
+  for (let foto of fotos) {
+    const nomeArquivo = foto.name;
+    const caminhoArquivo = path.join(diretorioImovel, nomeArquivo);
+    await fs.promises.writeFile(caminhoArquivo, foto.file); // Salva o arquivo no sistema de arquivos
+  }
+
+  // Atualize o modelo do imóvel no banco de dados para incluir os nomes dos arquivos das imagens
+  await Imoveis.update({ fotos: fotos.map(foto => foto.name) }, { where: { id: imovelId } });
+};
 
 module.exports = Imoveis;

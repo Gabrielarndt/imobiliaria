@@ -15,6 +15,8 @@ const { verificarTokenEObterDetalhesUsuario } = require('./Back-End/back/middlew
 const cookieParser = require('cookie-parser');
 const usuarioRouter = require('./Back-End/back/routes/userRoutes')
 const { authenticateJWT } = require('./Back-End/back/middleware/authMiddleware');
+const imoveisImagemRouter = require('./Back-End/back/routes/imoveis'); // Importe o arquivo de rota de imagens de imóveis
+const Imoveis = require("./Back-End/back/models/Imovel");
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Define a porta do servidor
@@ -31,6 +33,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src', 'pages'));
 
 // Rotas de autenticação
+app.use('/api/imoveis/imagens', imoveisImagemRouter);
 app.use('/api', usuarioRouter);
 app.use('/api/imoveis', imoveisRouter);
 app.use('/api/auth', authRouter); // Use o authRouter para lidar com rotas de autenticação
@@ -63,6 +66,7 @@ app.get('/logout', (req, res) => {
 app.get('/resultado', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'results.html'));
 });
+
 
 // Rota protegida que requer autenticação
 app.get('/usuario', verificarTokenEObterDetalhesUsuario, (req, res) => {
@@ -174,40 +178,6 @@ app.post('/api/editarSenha', async (req, res) => {
   } catch (error) {
     console.error('Erro ao atualizar a senha:', error);
     return res.status(500).json({ message: 'Erro interno do servidor' });
-  }
-});
-
-
-
-// Configuração do multer para lidar com o upload de arquivos
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Define o diretório onde os arquivos serão salvos
-  },
-  filename: function (req, file, cb) {
-    // Define o nome do arquivo no diretório de destino
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({ storage: storage });
-
-// Rota para lidar com o upload de imagens de imóveis
-app.post('/api/imoveis/fotos', upload.array('fotos'), async (req, res) => {
-  try {
-    // Verifica se há arquivos enviados na requisição
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ error: 'Nenhuma imagem foi enviada.' });
-    }
-
-    // Extrai os nomes dos arquivos enviados
-    const fotosNomes = req.files.map(file => file.filename);
-
-    // Retorna os nomes das imagens para o cliente
-    res.status(200).json({ fotos: fotosNomes });
-  } catch (error) {
-    console.error('Erro ao fazer upload de imagens:', error);
-    res.status(500).json({ error: 'Erro ao fazer upload de imagens.' });
   }
 });
 
