@@ -1,12 +1,12 @@
-.logoImg{
+.logoImg {
     margin-left: 0px;
 }
 
-.backColor{
-     background-color: rgb(121, 36, 36);
+.backColor {
+    background-color: rgb(121, 36, 36);
 }
 
-.opcao, 
+.opcao,
 .opcao5 {
     background-color: rgb(121, 36, 36);
     border-color: rgb(184, 38, 38);
@@ -21,29 +21,35 @@
     width: 50px;
 }
 
-.opcao:hover{
+.opcao:hover {
     width: 60px;
     font-size: 18px;
 }
 
-.opcao5:hover{
+.opcao5:hover {
     width: 65px;
     font-size: 18px;
 }
 
-.loginIcon{
+.opcao.selected {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.loginIcon {
     margin-left: 100%;
     font-size: 40px;
     color: white;
 }
 
-.loginIcon:hover{
-    transform: scale(1.5); /* Aumenta o tamanho do ícone em 20% */
+.loginIcon:hover {
+    transform: scale(1.5);
+    /* Aumenta o tamanho do ícone em 20% */
     color: rgb(184, 38, 38);
 }
 
-.botao{
-    width: 120px; 
+.botao {
+    width: 120px;
     font-size: 20px;
     background-color: rgb(121, 36, 36);
     color: white;
@@ -54,7 +60,12 @@
     border-color: rgb(184, 38, 38);
 }
 
-.botao:hover{
+.botao:hover {
     height: auto;
-    transform: scale(1.2); 
+    transform: scale(1.2);
+}
+
+.opcao.selected {
+    background-color: #007bff;
+    color: #fff;
 }

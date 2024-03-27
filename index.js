@@ -12,11 +12,11 @@ const authController = require('./Back-End/back/controllers/authController'); //
 const User = require('./Back-End/back/models/User');
 const passport = require('./Back-End/back/passport');
 const { verificarTokenEObterDetalhesUsuario } = require('./Back-End/back/middleware/authMiddleware')
-const cookieParser = require('cookie-parser');
 const usuarioRouter = require('./Back-End/back/routes/userRoutes')
 const { authenticateJWT } = require('./Back-End/back/middleware/authMiddleware');
 const imoveisImagemRouter = require('./Back-End/back/routes/imoveis'); // Importe o arquivo de rota de imagens de imóveis
 const Imoveis = require("./Back-End/back/models/Imovel");
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Define a porta do servidor

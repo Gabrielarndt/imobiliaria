@@ -12,10 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../styles/styleIndex.css">
     <style>
-        .opcao.selected {
-            background-color: #007bff;
-            color: #fff;
-        }
+        
     </style>
 </head>
 
@@ -168,7 +165,53 @@
             </div>
         </section>
     </main>
-
+    <section id="featured-properties" class="p-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Imóveis em Destaque</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <img style="height: 233px;"
+                            src="https://imgs.kenlo.io/VWRCUkQ2Tnp3d1BJRDBJVe1szkhnWr9UfpZS9ftWwjXgr7v5Znen3XVcMHllDVRJJeIbi3YwVYEtu14-0PVn+DQmvsU0bpDmvQq9+K6wyf7AtFWa5qqJo7fB5MWmUNfy8IYF9ID3QnSGvaBGXeQ-M1hXP7F9biTseYi5OCd68w6jqE-AU5VfRm9a3VgugElnn2CJU5KurWIq0Sj7K6-JlQG0V4G9M3FTQPlLANk18QdW9hinR0InpwcW5JO3vSCAaKyyLIOvkiMYDwYu6oa6SeKv15TFJsonDqooL34J41sRFqAe2beFX6J24QkLuOfUB1+EkBnHl+8kYMGwXN9KmrxWklmSGrRJ60uyxteWg6OuakmBNVZsob-N-qO4OP30GrSte2+jxctT5Y3ZNcNUa5qoCiQJEGZ4M3BJqRO29rnGsACzNGqH.jpg"
+                            class="card-img-top" alt="Property 1">
+                        <div class="card-body">
+                            <h5 class="card-title">Propriedade 1</h5>
+                            <p class="card-text">Descrição da propriedade. Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit.</p>
+                            <a href="#" class="btn btn-primary">Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <img style="height: 233px;"
+                            src="https://imgs.kenlo.io/VWRCUkQ2Tnp3d1BJRDBJVe1szkhnWr9UfpZS9bJDwnbk9Kawbnev1nxMNm9yHFhIP-MQkSx9WYNv3FtAyctF9hAzmfEWDae84yq7xtyJ6eej-GK79qrJ5OOC9u-CAJz1+Jwci7L4TWmX7IxLRP0cPnAmacwrRi7JVZ7QYyRjrB7dmkrfa+RhGlJt4TwWvioN6FalfaqT1HoI5xGmXuyB8nTQCaC5XwwWUawNEtEw7ldR7AL0SVpntREFocalqyCZPuL1b5Wiyi1eWxVo6JOmT73nmZ7AZphmFeUmKDQJ41sRS6oF0baQTPl08g0LueWPUEHBx0LH0OQkI5yoX4tBnPBSkAnBHrZJ7BvqkoOVgvSla06AMU5hqu-A7fCxf76jUvCuOniih9tPtI3XPIgBZ4nkQSRKQjQtdmIO.jpg"
+                            class="card-img-top" alt="Property 1">
+                        <div class="card-body">
+                            <h5 class="card-title">Propriedade 1</h5>
+                            <p class="card-text">Descrição da propriedade. Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit.</p>
+                            <a href="#" class="btn btn-primary">Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <img style="height: 233px;"
+                            src="https://imgs.kenlo.io/VWRCUkQ2Tnp3d1BJRDBJVe1szkhnWr9UfpZS9ftWwjXgr7v5Znen3XVcMHllDVRJJeIbi3YwVYEtu2E-695quTAimMFHVbyemHPe8qGR-8rJoEKT3qzhp7HAkML5QsH-2Ks80KfxHnKRn61PdPd2OVw8RPlgbzLFT5-dGGILpgOXmh7xUORWQm4E9hFivhVszWynWaKr7nII0hn0K-jUoS6ed-rsBX9xLLMNAdsz6EIJ9xa9SUxy8h8d55m-oS7TO7S-K5+hxzlXFx5k9oa+Squ619jCLJU4Vr0lNm4L5VMZWe0S2-TJT-8+5wEDqv3JFhXchgzWgPAoc9j0QdxJnqUcwgqVSrNI7R-uz4SU1aKqbUiCNFU4pOyYqvTgNfrxHqvseGerj9xRpo7ILtBSKsS2A2EHHjRnLyFRsVL3+LeLr1KrOGzK6Q==.jpg"
+                            class="card-img-top" alt="Property 1">
+                        <div class="card-body">
+                            <h5 class="card-title">Propriedade 1</h5>
+                            <p class="card-text">Descrição da propriedade. Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit.</p>
+                            <a href="#" class="btn btn-primary">Detalhes</a>
+                            <i class="fas fa-heart" onclick="toggleFavorite(userId, imovelId)"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <footer class="p-5 bg-dark text-white text-center">
         <div class="container">
             <div class="row">
@@ -179,74 +222,10 @@
         </div>
     </footer>
     <script>
-        const grupos = document.querySelectorAll('.btn-group');
-
-        // Variáveis para armazenar os valores selecionados
-        let quartosSelecionados = "";
-        let suitesSelecionadas = "";
-        let garagensSelecionadas = "";
-
-        grupos.forEach(grupo => {
-            const opcoes = grupo.querySelectorAll('.opcao');
-
-            opcoes.forEach(opcao => {
-                opcao.addEventListener('click', () => {
-                    // Verificar se o botão está selecionado
-                    const isSelected = opcao.classList.contains('selected');
-
-                    // Remover a classe 'selected' de todos os botões do grupo
-                    opcoes.forEach(op => op.classList.remove('selected'));
-
-                    // Se o botão não estiver selecionado, armazenar o valor selecionado
-                    if (!isSelected) {
-                        opcao.classList.add('selected');
-
-                        // Armazenar o valor do botão selecionado
-                        if (grupo.getAttribute('aria-label') === 'Quartos') {
-                            quartosSelecionados = opcao.value;
-                        } else if (grupo.getAttribute('aria-label') === 'Suítes') {
-                            suitesSelecionadas = opcao.value;
-                        } else if (grupo.getAttribute('aria-label') === 'Vagas de Garagem') {
-                            garagensSelecionadas = opcao.value;
-                        }
-                    } 
-                });
-            });
-        });
-
-        // Função para lidar com o envio do formulário de pesquisa
-        function handleSearchFormSubmit(event) {
-            event.preventDefault();
-
-            // Obtendo os valores dos campos do formulário
-            var tipo = document.querySelector('[name="tipo"]').value;
-            var tipoImovel = document.querySelector('[name="tipoImovel"]').value;
-            var cidade = document.querySelector('[name="cidade"]').value;
-            var precoMinimo = document.querySelector('[name="precoMinimo"]').value;
-            var precoMaximo = document.querySelector('[name="precoMaximo"]').value;
-            var bairro = document.querySelector('[name="bairro"]').value;
-
-            // Criar a URL com os parâmetros do formulário
-            var url = 'resultado?tipo=' + tipo +
-                '&tipoImovel=' + tipoImovel +
-                '&cidade=' + cidade +
-                '&precoMinimo=' + precoMinimo +
-                '&precoMaximo=' + precoMaximo +
-                '&bairro=' + bairro +
-                '&quartos=' + quartosSelecionados +
-                '&suites=' + suitesSelecionadas +
-                '&garagens=' + garagensSelecionadas;
-
-            // Redirecionar para a página de resultados com os parâmetros do formulário
-            window.location.href = url;
-        }
-
-        // Adicionar um ouvinte de evento para o formulário de pesquisa
-        document.getElementById('searchForm').addEventListener('submit', handleSearchFormSubmit);
-
+        
     </script>
 
-    <script src="../services/bairros.js"></script>
+    <script src="../componentes/home.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
