@@ -46,10 +46,18 @@ function displayImoveis(imoveis) {
                     <p class="card-text">Suítes: ${imovel.suites}</p>
                     <p class="card-text">Vagas de Garagem: ${imovel.garagens}</p>
                     <p class="card-text">Tipo Imovel: ${imovel.tipoImovel}</p>
+                    <button class="btn btn-primary btn-detalhes" data-imovel-id="${imovel.id}">Detalhes</button>
                 </div>
             </div>
         `;
         searchResultsList.appendChild(imovelCard);
+    });
+    const btnDetalhesList = document.querySelectorAll('.btn-detalhes');
+    btnDetalhesList.forEach(btn => {
+        btn.addEventListener('click', (event) => {
+            const imovelId = event.target.dataset.imovelId;
+            window.location.href = `/detalhes?id=${imovelId}`;
+        });
     });
 }
 // Chama a função para buscar e exibir os imóveis quando a página é carregada

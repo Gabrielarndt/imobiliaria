@@ -67,6 +67,10 @@ app.get('/resultado', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'results.html'));
 });
 
+app.get('/detalhes', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'pages', 'detalhes.html'));
+});
+
 
 // Rota protegida que requer autenticação
 app.get('/usuario', verificarTokenEObterDetalhesUsuario, (req, res) => {
