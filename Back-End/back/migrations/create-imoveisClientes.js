@@ -2,7 +2,7 @@
 const { DataTypes } = require('sequelize');
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Imoveis', {
+    await queryInterface.createTable('ImoveisUsers', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -54,7 +54,7 @@ module.exports = {
         allowNull: true,
       },
       status: {
-        type: Sequelize.ENUM('Análise', 'Destaque', 'Novo', 'Todos'),
+        type: Sequelize.ENUM('Análise'),
         allowNull: true,
       },
       fotos: {
@@ -63,6 +63,10 @@ module.exports = {
       },
       ordemFotos: {
         type: DataTypes.JSON, // Armazenar a ordem das fotos como um array de IDs
+        allowNull: true,
+      },
+      idUsuario:{
+        type: Sequelize.INTEGER,
         allowNull: true,
       },
       createdAt: {

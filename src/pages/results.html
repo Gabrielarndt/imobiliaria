@@ -41,8 +41,8 @@
         </nav>
     </header>
 
-    <main class="row">
-        <aside id="filters" class="col-md-3 p-5">
+    <main class="row bg-light" >
+        <aside id="filters" class="col-md-3 p-5 bg-white" style="border-radius: 40px;">
             <!-- Coloque seus filtros aqui -->
             <div class="container">
                 <h2>Filtros</h2>
@@ -147,15 +147,15 @@
                 </form>
             </div>
         </aside>
-        <section id="search-results" class="col-md-9 p-5 bg-light text-dark">
-            <div class="container">
-                <h2>Resultados da Pesquisa</h2>
-                <div id="search-results-list" class="row">
-                    <!-- Esta div será preenchida dinamicamente com os imóveis -->
+            <section id="search-results" class="col-md-9 p-5 text-dark"
+                style="max-height: 800px; overflow-y: auto;">
+                <div class="container">
+                    <h2>Resultados da Pesquisa</h2>
+                    <div id="search-results-list" class="row">
+                        <!-- Esta div será preenchida dinamicamente com os imóveis -->
+                    </div>
                 </div>
-            </div>
-        </section>
-        <hr>
+            </section>
     </main>
 
     <div class="container" style="padding: 30px;">
