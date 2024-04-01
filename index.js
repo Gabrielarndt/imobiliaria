@@ -4,7 +4,7 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
-const multer = require('multer');
+// const multer = require('multer');
 const authRouter = require('./Back-End/back/routes/authRoutes'); // Importe as suas rotas de autenticação
 const imoveisRouter = require('./Back-End/back/routes/imoveis');
 const bodyParser = require('body-parser');
@@ -14,8 +14,9 @@ const passport = require('./Back-End/back/passport');
 const { verificarTokenEObterDetalhesUsuario } = require('./Back-End/back/middleware/authMiddleware')
 const usuarioRouter = require('./Back-End/back/routes/userRoutes')
 const { authenticateJWT } = require('./Back-End/back/middleware/authMiddleware');
+const { authenticateJWTImovelUser } = require('./Back-End/back/middleware/authMiddleware');
 const imoveisImagemRouter = require('./Back-End/back/routes/imoveis'); // Importe o arquivo de rota de imagens de imóveis
-const Imoveis = require("./Back-End/back/models/Imovel");
+// const Imoveis = require("./Back-End/back/models/Imovel");
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -51,9 +52,14 @@ app.get('/cadastroImovel',authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastro.html'));
 });
 
+app.get('/cadastroImovelUser',authenticateJWTImovelUser, (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastroImovelUser.html'));
+});
+
 app.get('/cadastro', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'cadastroCliente.html'));
 });
+
 
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'login.html'));
@@ -71,6 +77,9 @@ app.get('/detalhes', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'detalhes.html'));
 });
 
+app.get('/analise', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'pages', 'analise.html'));
+});
 
 // Rota protegida que requer autenticação
 app.get('/usuario', verificarTokenEObterDetalhesUsuario, (req, res) => {

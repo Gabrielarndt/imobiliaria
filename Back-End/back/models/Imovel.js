@@ -53,8 +53,20 @@ const Imoveis = sequelize.define('Imoveis', {
     type: DataTypes.ENUM('apartamento', 'casa', 'terreno','sala-escritorio', 'loja', 'galpao', 'imovel-rural'),
     allowNull: true,
   },
+  areaUtil:{
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  areaTotal:{
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
   status: {
-    type: DataTypes.ENUM('disponivel', 'vendido', 'alugado'),
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  idUsuario:{
+    type: DataTypes.INTEGER,
     allowNull: true,
   },
   fotos: {

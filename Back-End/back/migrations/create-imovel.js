@@ -2,7 +2,7 @@
 const { DataTypes } = require('sequelize');
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('ImoveisUsers', {
+    await queryInterface.createTable('Imoveis', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -62,7 +62,7 @@ module.exports = {
         allowNull: true,
       },
       status: {
-        type: Sequelize.ENUM('Análise'),
+        type: Sequelize.STRING,
         allowNull: true,
       },
       fotos: {
