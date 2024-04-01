@@ -53,6 +53,14 @@ module.exports = {
         type: Sequelize.ENUM('apartamento', 'casa', 'terreno','sala-escritorio', 'loja', 'galpao', 'imovel-rural'),
         allowNull: true,
       },
+      areaUtil:{
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      areaTotal:{
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
       status: {
         type: Sequelize.ENUM('Análise', 'Destaque', 'Novo', 'Todos'),
         allowNull: true,
