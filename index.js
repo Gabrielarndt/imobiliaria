@@ -77,7 +77,7 @@ app.get('/detalhes', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'detalhes.html'));
 });
 
-app.get('/analise', (req, res) => {
+app.get('/analise',authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'analise.html'));
 });
 

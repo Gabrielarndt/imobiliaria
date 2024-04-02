@@ -30,9 +30,9 @@ function displayImoveis(imoveis) {
 
     // Limpa a lista de resultados
     searchResultsList.innerHTML = '';
-
+    const imoveisAnalise = imoveis.filter(imovel => imovel.status !== 'analise');
     // Loop pelos imóveis e cria os elementos HTML correspondentes
-    imoveis.forEach(imovel => {
+    imoveisAnalise.forEach(imovel => {
         const imovelCard = document.createElement('div');
         imovelCard.classList.add('col-md-4');
         imovelCard.innerHTML = `

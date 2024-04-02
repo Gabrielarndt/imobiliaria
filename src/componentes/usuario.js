@@ -39,7 +39,10 @@ async function carregarInformacoesUsuario() {
 
          // Verificar se o ID do usuário é 13 e mostrar o link "Cadastro de imóvel"
          if (userId === '13') {
-            document.getElementById('linkCadastroImovel').style.display = 'block';
+            document.getElementById('linkAcessoCadastro').style.display = 'block';
+        }
+        if (userId === '13') {
+            document.getElementById('linkAcessoAnalise').style.display = 'block';
         }
     } catch (error) {
         console.error('Erro ao carregar informações do usuário:', error);
