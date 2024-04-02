@@ -70,8 +70,12 @@ document.getElementById('fotos').addEventListener('change', (event) => {
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const jsonData = {};
     const formData = new FormData(form);
+
+    const userId = obterUserIdDoCookie();
+
+    // Adiciona o ID do usuário ao formData
+    formData.append('idUsuario', userId);
 
     const filesData = [];
     
@@ -85,6 +89,8 @@ form.addEventListener('submit', async (event) => {
             file: file
         });
     }
+
+    console.log('Files Data:', filesData); // Adiciona um log para verificar os dados dos arquivos
 
     // Verificar se já existem fotos em jsonData['fotos']
     if (jsonData['fotos']) {
@@ -107,7 +113,7 @@ form.addEventListener('submit', async (event) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(jsonData)
+            body: JSON.stringify(Object.fromEntries(formData.entries()))
         });
 
         if (response.ok) {
@@ -117,6 +123,64 @@ form.addEventListener('submit', async (event) => {
         }
     } catch (error) {
         console.error('Erro ao cadastrar imóvel:', error);
+    }
+});
+
+function obterUserIdDoCookie() {
+    const cookies = document.cookie.split(';'); // Divide os cookies por ponto e vírgula
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim(); // Remove espaços em branco do início e do fim do cookie
+        if (cookie.startsWith('userId=')) { // Verifica se o cookie começa com 'userId='
+            return cookie.substring('userId='.length); // Retorna o ID do usuário removendo 'userId=' do início do cookie
+        }
+    }
+    return null; // Retorna null se o cookie 'userId' não for encontrado
+}
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Seleciona os elementos do formulário
+    const selectCidade = document.querySelector("#cidade");
+    const selectbairro = document.querySelector("#bairro");
+
+    // Função para carregar os bairros de acordo com a cidade selecionada
+    function loadbairros() {
+        // Verifica se uma cidade foi selecionada
+        if (selectCidade.value) {
+            // Simula uma chamada assíncrona para obter os bairros da cidade selecionada
+            // Neste exemplo, usamos um array fixo, mas na prática, você buscaria os bairros no servidor
+            const bairros = getbairrosByCidade(selectCidade.value);
+
+            // Limpa as opções atuais
+            selectbairro.innerHTML = "";
+
+            // Adiciona as novas opções de bairro ao elemento select
+            bairros.forEach(bairro => {
+                const option = document.createElement("option");
+                option.value = bairro;
+                option.textContent = bairro;
+                selectbairro.appendChild(option);
+            });
+        }
+    }
+
+    // Adiciona um ouvinte de evento ao formulário para lidar com a mudança na seleção da cidade
+    selectCidade.addEventListener("change", loadbairros);
+
+    // Função simulada para obter os bairros da cidade selecionada
+    function getbairrosByCidade(cidade) {
+        // Simula uma busca no servidor para obter os bairros da cidade selecionada
+        // Aqui, retornamos um array fixo, mas na prática, você buscaria os bairros no banco de dados
+        if (cidade === "itajai") {
+            return ["Bairro", "Bairro Fazenda", "Centro", "Praia Brava", "Vila Operária", "São João", "Cabeçudas", "Cordeiros"];
+        } else if (cidade === "balneario-camboriu") {
+            return ["Bairro", "Centro", "Ariribá", "Barra", "Pioneiros", "Praia dos Amores", "Santa Regina"];
+        } else if (cidade === "itapema") {
+            return ["Bairro", "Meia Praia", "Morretes"];
+        } else {
+            return ["Bairro"]; // Retornar um array vazio se nenhuma cidade corresponder
+        }
     }
 });
 
