@@ -1,30 +1,36 @@
-//results.js
+// Obtém o ID do usuário logado
+const userId = obterUserIdDoCookie();
 
-async function fetchAndDisplayImoveis() {
+// Função para buscar e exibir os imóveis do usuário logado
+async function fetchAndDisplayUserImoveis() {
     try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const tipo = urlParams.get('tipo');
-        const cidade = urlParams.get('cidade');
-        const precoMinimo = urlParams.get('precoMinimo');
-        const precoMaximo = urlParams.get('precoMaximo');
-        const quartos = urlParams.get('quartos');
-        const suites = urlParams.get('suites');
-        const garagens = urlParams.get('garagens');
-        const tipoImovel = urlParams.get('tipoImovel');
+        // Construir a URL da rota de busca de imóveis do usuário logado
+        const url = `/api/imoveis/usuario/${userId}`;
 
-        // Construir a URL da rota de busca de imóveis com os parâmetros de busca
-        const url = `/api/imoveis/buscar?tipo=${tipo}&cidade=${cidade}&precoMinimo=${precoMinimo}&precoMaximo=${precoMaximo}&quartos=${quartos}&suites=${suites}&garagens=${garagens}&tipoImovel=${tipoImovel}`;
-
-        // Realizar uma solicitação GET para a rota de busca de imóveis
+        // Realizar uma solicitação GET para a rota de busca de imóveis do usuário logado
         const response = await fetch(url);
         const imoveis = await response.json();
 
-        // Exibir os imóveis na página
+        console.log('Imóveis do usuário:', imoveis); // Adiciona este console.log
+
+        // Exibir os imóveis do usuário na página
         displayImoveis(imoveis);
     } catch (error) {
-        console.error('Erro ao buscar imóveis:', error);
+        console.error('Erro ao buscar imóveis do usuário:', error);
     }
 }
+
+function obterUserIdDoCookie() {
+    const cookies = document.cookie.split(';'); // Divide os cookies por ponto e vírgula
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim(); // Remove espaços em branco do início e do fim do cookie
+        if (cookie.startsWith('userId=')) { // Verifica se o cookie começa com 'userId='
+            return cookie.substring('userId='.length); // Retorna o ID do usuário removendo 'userId=' do início do cookie
+        }
+    }
+    return null; // Retorna null se o cookie 'userId' não for encontrado
+}
+
 
 // Função para exibir os imóveis na página
 function displayImoveis(imoveis) {
@@ -32,15 +38,14 @@ function displayImoveis(imoveis) {
 
     // Limpa a lista de resultados
     searchResultsList.innerHTML = '';
-    const imoveisAnalise = imoveis.filter(imovel => imovel.status !== 'analise');
     // Loop pelos imóveis e cria os elementos HTML correspondentes
-    imoveisAnalise.forEach(imovel => {
+    imoveis.forEach(imovel => {
         const imovelCard = document.createElement('div');
         imovelCard.classList.add('col-md-4');
         imovelCard.innerHTML = `
             <div class="card mb-4">
                 <div class="card-body">
-                    ${(imovel.fotos && imovel.fotos.length > 0) ? imovel.fotos.map(foto => `<img src="/api/imoveis/imagens/${foto}" alt="Imagem do imóvel" class="img-fluid">`).join('') : ''}
+                ${(imovel.fotos && imovel.fotos.length > 0) ? imovel.fotos.map(foto => `<img src="/api/imoveis/imagens/${foto}" alt="Imagem do imóvel" class="img-fluid">`).join('') : ''}
                     <h5 class="card-title">${imovel.tipo}</h5>
                     <p class="card-text">Preço: R$ ${imovel.preco}</p>
                     <p class="card-text">Cidade: ${imovel.cidade}</p>
@@ -62,5 +67,6 @@ function displayImoveis(imoveis) {
         });
     });
 }
-// Chama a função para buscar e exibir os imóveis quando a página é carregada
-fetchAndDisplayImoveis();
+
+// Chama a função para buscar e exibir os imóveis do usuário quando a página é carregada
+fetchAndDisplayUserImoveis();

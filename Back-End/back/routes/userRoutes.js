@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { User } = require('../models/User');
-
+const Imovel = require('../models/Imovel'); // Importe o modelo do Imóvel
 
 // Rota para obter as informações do usuário com base no ID
 router.get('/api/usuario/:userId', async (req, res) => {
@@ -24,5 +24,19 @@ router.get('/api/usuario/:userId', async (req, res) => {
         res.status(500).json({ message: 'Erro interno do servidor' });
     }
 });
+
+router.get('/api/imoveis/usuario/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId; 
+        // Faça aqui a lógica para buscar os imóveis do usuário com o ID fornecido
+        // Por exemplo, você pode usar o modelo Imovel para encontrar os imóveis associados a esse usuário
+        const userImoveis = await Imovel.find({ idUsuario: userId });
+        res.json(userImoveis); 
+    } catch (error) {
+        console.error('Erro ao buscar os imóveis do usuário:', error);
+        res.status(500).json({ error: 'Erro ao buscar os imóveis do usuário' }); 
+    }
+});
+
 
 module.exports = router;

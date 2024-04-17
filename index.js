@@ -81,6 +81,21 @@ app.get('/analise',authenticateJWT, (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'pages', 'analise.html'));
 });
 
+app.get('/seusImoveis', authenticateJWTImovelUser, (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'pages', 'imoveisUser.html'));
+});
+
+app.get('/api/imoveis/usuario/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId; 
+    const userImoveis = await Imovel.find({ idUsuario: userId });
+    res.json(userImoveis); 
+  } catch (error) {
+    console.error('Erro ao buscar os imóveis do usuário:', error);
+    res.status(500).json({ error: 'Erro ao buscar os imóveis do usuário' }); 
+  }
+});
+
 // Rota protegida que requer autenticação
 app.get('/usuario', verificarTokenEObterDetalhesUsuario, (req, res) => {
   res.render('usuario');
