@@ -68,8 +68,6 @@ async function loginUser(req, res) {
     }
 }
 
-
-
 async function logoutUser(req, res) {
     try {
         res.clearCookie('token');
@@ -115,8 +113,6 @@ async function updateUser(req, res) {
         return res.status(500).json({ message: 'Erro interno do servidor' });
     }
 }
-
-
 
 module.exports = { registerUser, loginUser, logoutUser, updateUser };
 
