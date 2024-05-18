@@ -111,6 +111,20 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+router.put('/:id', async (req, res) => {
+    try {
+        const imovel = await Imoveis.findByPk(req.params.id);
+        if (imovel) {
+            await imovel.update(req.body);
+            res.status(200).json(imovel);
+        } else {
+            res.status(404).json({ error: 'Imóvel não encontrado' });
+        }
+    } catch (error) {
+        console.error('Erro ao editar imóvel:', error);
+        res.status(500).json({ error: 'Erro ao editar imóvel' });
+    }
+});
 
 
 // Rotas adicionais para operações CRUD de imóveis utilizando ImovelController

@@ -16,7 +16,7 @@ const usuarioRouter = require('./Back-End/back/routes/userRoutes')
 const { authenticateJWT } = require('./Back-End/back/middleware/authMiddleware');
 const { authenticateJWTImovelUser } = require('./Back-End/back/middleware/authMiddleware');
 const imoveisImagemRouter = require('./Back-End/back/routes/imoveis'); // Importe o arquivo de rota de imagens de imóveis
-// const Imoveis = require("./Back-End/back/models/Imovel");
+const Imovel = require("./Back-End/back/models/Imovel");
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -96,6 +96,11 @@ app.get('/api/imoveis/usuario/:userId', async (req, res) => {
   }
 });
 
+app.get('/api/user/id', authenticateJWT, (req, res) => {
+  const userId = req.user.id;
+  res.json({ userId });
+});
+
 // Rota protegida que requer autenticação
 app.get('/usuario', verificarTokenEObterDetalhesUsuario, (req, res) => {
   res.render('usuario');
@@ -117,6 +122,73 @@ app.get('/api/usuario/:userId', async (req, res) => {
   } catch (error) {
     console.error('Erro ao buscar informações do usuário:', error);
     res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+});
+
+app.get('/editarImovel',authenticateJWT, (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'pages', 'editaImovel.html'));
+});
+
+// Rota para obter os dados de um imóvel pelo ID
+app.get('/api/imoveis/:id', async (req, res) => {
+  try {
+    const imovelId = req.params.id;
+    const imovel = await Imovel.findByPk(imovelId);
+
+    if (!imovel) {
+      return res.status(404).json({ error: 'Imóvel não encontrado' });
+    }
+
+    // Verifica se imovel.fotos é um array antes de chamar o método map()
+    if (Array.isArray(imovel.fotos)) {
+      // Se for um array, continua como antes
+      imovel.fotos = imovel.fotos.map(foto => {
+        // Faça qualquer processamento necessário aqui, se necessário
+        return foto;
+      });
+    } else {
+      // Se não for um array, converte para um array
+      imovel.fotos = [imovel.fotos];
+    }
+
+    return res.status(200).json(imovel);
+  } catch (error) {
+    console.error('Erro ao obter detalhes do imóvel:', error);
+    return res.status(500).json({ error: 'Erro interno do servidor ao buscar detalhes do imóvel' });
+  }
+});
+
+
+
+// Rota para editar os dados de um imóvel
+app.put('/api/imoveis/:id', async (req, res) => {
+  const { id } = req.params;
+  const { titulo, descricao, tipo, tipoImovel, quartos, garagens, suites, preco, cidade, bairro, rua, status } = req.body;
+  try {
+      const imovel = await Imovel.findByPk(id); // Supondo que você tenha um modelo Imovel
+      if (!imovel) {
+          return res.status(404).json({ message: 'Imóvel não encontrado' });
+      }
+
+      imovel.titulo = titulo;
+      imovel.descricao = descricao;
+      imovel.tipo = tipo;
+      imovel.tipoImovel = tipoImovel;
+      imovel.quartos = quartos;
+      imovel.garagens = garagens;
+      imovel.suites = suites;
+      imovel.preco = preco;
+      imovel.cidade = cidade;
+      imovel.bairro = bairro;
+      imovel.rua = rua;
+      imovel.status = status;
+
+      await imovel.save();
+
+      res.status(200).json({ message: 'Imóvel atualizado com sucesso!', imovel });
+  } catch (error) {
+      console.error('Erro ao atualizar imóvel:', error);
+      res.status(500).json({ message: 'Erro interno do servidor' });
   }
 });
 

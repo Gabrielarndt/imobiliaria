@@ -1,5 +1,3 @@
-//results.js
-
 async function fetchAndDisplayImoveis() {
     try {
         const urlParams = new URLSearchParams(window.location.search);
@@ -12,29 +10,34 @@ async function fetchAndDisplayImoveis() {
         const garagens = urlParams.get('garagens');
         const tipoImovel = urlParams.get('tipoImovel');
 
-        // Construir a URL da rota de busca de imóveis com os parâmetros de busca
         const url = `/api/imoveis/buscar?tipo=${tipo}&cidade=${cidade}&precoMinimo=${precoMinimo}&precoMaximo=${precoMaximo}&quartos=${quartos}&suites=${suites}&garagens=${garagens}&tipoImovel=${tipoImovel}`;
 
-        // Realizar uma solicitação GET para a rota de busca de imóveis
         const response = await fetch(url);
         const imoveis = await response.json();
 
-        // Exibir os imóveis na página
-        displayImoveis(imoveis);
+        // Obter o ID do usuário autenticado
+        const userResponse = await fetch('/api/user/id', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        });
+        const userData = await userResponse.json();
+        const userId = userData.userId;
+        console.log(`ID do usuário autenticado: ${userId}`);
+
+        displayImoveis(imoveis, userId);
     } catch (error) {
         console.error('Erro ao buscar imóveis:', error);
     }
 }
 
-// Função para exibir os imóveis na página
-function displayImoveis(imoveis) {
+function displayImoveis(imoveis, userId) {
     const searchResultsList = document.getElementById('search-results-list');
-
-    // Limpa a lista de resultados
     searchResultsList.innerHTML = '';
-    const imoveisAnalise = imoveis.filter(imovel => imovel.status !== 'analise');
-    // Loop pelos imóveis e cria os elementos HTML correspondentes
-    imoveisAnalise.forEach(imovel => {
+
+    imoveis.forEach(imovel => {
         const imovelCard = document.createElement('div');
         imovelCard.classList.add('col-md-4');
         imovelCard.innerHTML = `
@@ -47,13 +50,15 @@ function displayImoveis(imoveis) {
                     <p class="card-text">Quartos: ${imovel.quartos}</p>
                     <p class="card-text">Suítes: ${imovel.suites}</p>
                     <p class="card-text">Vagas de Garagem: ${imovel.garagens}</p>
-                    <p class="card-text">Tipo Imovel: ${imovel.tipoImovel}</p>
+                    <p class="card-text">Tipo Imóvel: ${imovel.tipoImovel}</p>
                     <button class="btn btn-primary btn-detalhes" data-imovel-id="${imovel.id}">Detalhes</button>
+                    ${userId === 13 ? `<button class="btn btn-secondary btn-editar" data-imovel-id="${imovel.id}">Editar</button>` : ''}
                 </div>
             </div>
         `;
         searchResultsList.appendChild(imovelCard);
     });
+
     const btnDetalhesList = document.querySelectorAll('.btn-detalhes');
     btnDetalhesList.forEach(btn => {
         btn.addEventListener('click', (event) => {
@@ -61,6 +66,15 @@ function displayImoveis(imoveis) {
             window.location.href = `/detalhes?id=${imovelId}`;
         });
     });
+
+    const btnEditarList = document.querySelectorAll('.btn-editar');
+    btnEditarList.forEach(btn => {
+        btn.addEventListener('click', (event) => {
+            const imovelId = event.target.dataset.imovelId;
+            window.location.href = `/editarImovel?id=${imovelId}`;
+        });
+    });
 }
+
 // Chama a função para buscar e exibir os imóveis quando a página é carregada
 fetchAndDisplayImoveis();
