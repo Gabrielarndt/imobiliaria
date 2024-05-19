@@ -82,8 +82,16 @@ router.get('/:id', async (req, res) => {
             return res.status(404).json({ message: 'Imóvel não encontrado' });
         }
 
-        // Converter os dados das imagens em URLs acessíveis
-        const imagensUrls = imovel.fotos.map(imagem => `/api/imoveis/imagens/${imagem.name}`);
+        // Adiciona um log para verificar a estrutura de imovel.fotos
+        console.log('Estrutura de imovel.fotos:', imovel.fotos);
+
+        // Certifique-se de que imovel.fotos é um array
+        let imagensUrls = [];
+        if (Array.isArray(imovel.fotos)) {
+            imagensUrls = imovel.fotos.map(imagem => imagem.url);
+        } else {
+            console.warn('imovel.fotos não é um array:', imovel.fotos);
+        }
 
         // Criar um objeto de resposta com os detalhes do imóvel e as URLs das imagens
         const resposta = {
@@ -101,7 +109,6 @@ router.get('/:id', async (req, res) => {
             tipoImovel: imovel.tipoImovel,
             status: imovel.status,
             fotos: imagensUrls
-            // Adicione outros detalhes do imóvel conforme necessário
         };
 
         res.status(200).json(resposta);
@@ -110,6 +117,7 @@ router.get('/:id', async (req, res) => {
         res.status(500).json({ error: 'Erro ao obter detalhes do imóvel' });
     }
 });
+
 
 router.put('/:id', async (req, res) => {
     try {

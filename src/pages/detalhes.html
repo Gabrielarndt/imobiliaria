@@ -14,7 +14,7 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-light backColor">
-            <div class="container-fluid ">
+            <div class="container-fluid">
                 <a class="navbar-brand text-white" href="#"></a>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav col-md-11">
@@ -99,40 +99,44 @@
             fetch(`/api/imoveis/${imovelId}`)
                 .then(response => response.json())
                 .then(imovel => {
+                    if (!imovel || !imovel.titulo) {
+                        console.error('Dados do imóvel estão incompletos:', imovel);
+                        return;
+                    }
+
                     const imovelTitle = document.getElementById('imovel-title');
                     imovelTitle.textContent = imovel.titulo;
 
                     const imovelFotoDiv = document.getElementById('imovel-foto');
+                    imovelFotoDiv.innerHTML = ''; // Clear any existing content
                     if (imovel.fotos && imovel.fotos.length > 0) {
                         const primeiraFoto = imovel.fotos[0];
                         const imgElement = document.createElement('img');
-                        imgElement.src = primeiraFoto.url;
+                        imgElement.src = primeiraFoto;
+                        imgElement.style.width = '100%'; // Ajustar o tamanho da imagem conforme necessário
                         imovelFotoDiv.appendChild(imgElement);
                     }
 
                     const imovelDetailsDiv = document.getElementById('imovel-details');
-                    imovelDetailsDiv.innerHTML = `<div class='preco'>
-                        <p>Preço: R$ ${imovel.preco}</p>
+                    imovelDetailsDiv.innerHTML = `
+                        <div class='preco'>
+                            <p>Preço: R$ ${imovel.preco}</p>
                         </div>
                         <p>Tipo: ${imovel.tipo}</p>
                         <p>Cidade: ${imovel.cidade}</p>
                         <p>Bairro: ${imovel.bairro}</p>
                         <p>Rua: ${imovel.rua}</p>
-                        <p><img src="../assets/imagens/iQuarto.png" alt=""
-                                                style="width: 30px; margin-right: 4px;">Quartos: ${imovel.quartos}</p>
-                        <p><img src="../assets/imagens/iSuite.png" alt=""
-                                                style="width: 30px; margin-right: 4px;">Suítes: ${imovel.suites}</p>
-                        <p><img src="../assets/imagens/iCarro.png" alt=""
-                                                style="width: 30px; margin-right: 5px;">Vagas de Garagem: ${imovel.garagens}</p>
+                        <p><img src="../assets/imagens/iQuarto.png" alt="" style="width: 30px; margin-right: 4px;">Quartos: ${imovel.quartos}</p>
+                        <p><img src="../assets/imagens/iSuite.png" alt="" style="width: 30px; margin-right: 4px;">Suites: ${imovel.suites}</p>
+                        <p><img src="../assets/imagens/iVagas.png" alt="" style="width: 30px; margin-right: 4px;">Garagens: ${imovel.garagens}</p>
                     `;
 
                     const descricaoImovelDiv = document.getElementById('descricao-imovel');
-                    descricaoImovelDiv.innerHTML = `
-                        <h3>Descrição:</h3>
-                        <p>${imovel.descricao}</p>
-                    `;
+                    descricaoImovelDiv.textContent = imovel.descricao;
                 })
-                .catch(error => console.error('Erro ao obter detalhes do imóvel:', error));
+                .catch(error => {
+                    console.error('Erro ao obter detalhes do imóvel:', error);
+                });
         };
     </script>
 </body>

@@ -132,31 +132,26 @@ app.get('/editarImovel',authenticateJWT, (req, res) => {
 // Rota para obter os dados de um imóvel pelo ID
 app.get('/api/imoveis/:id', async (req, res) => {
   try {
-    const imovelId = req.params.id;
-    const imovel = await Imovel.findByPk(imovelId);
+      const imovelId = req.params.id;
+      const imovel = await Imovel.findByPk(imovelId);
 
-    if (!imovel) {
-      return res.status(404).json({ error: 'Imóvel não encontrado' });
-    }
+      if (!imovel) {
+          return res.status(404).json({ error: 'Imóvel não encontrado' });
+      }
 
-    // Verifica se imovel.fotos é um array antes de chamar o método map()
-    if (Array.isArray(imovel.fotos)) {
-      // Se for um array, continua como antes
-      imovel.fotos = imovel.fotos.map(foto => {
-        // Faça qualquer processamento necessário aqui, se necessário
-        return foto;
-      });
-    } else {
-      // Se não for um array, converte para um array
-      imovel.fotos = [imovel.fotos];
-    }
+      // Converte as fotos para o formato esperado se necessário
+      if (imovel.fotos && !Array.isArray(imovel.fotos)) {
+          imovel.fotos = [imovel.fotos];
+      }
 
-    return res.status(200).json(imovel);
+      res.status(200).json(imovel);
   } catch (error) {
-    console.error('Erro ao obter detalhes do imóvel:', error);
-    return res.status(500).json({ error: 'Erro interno do servidor ao buscar detalhes do imóvel' });
+      console.error('Erro ao obter detalhes do imóvel:', error);
+      res.status(500).json({ error: 'Erro interno do servidor ao buscar detalhes do imóvel' });
   }
 });
+
+
 
 
 
